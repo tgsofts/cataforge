@@ -1,0 +1,12 @@
+{
+  "DEMO-100": {
+    "storeId": "cataforge_demo",
+    "storeName": "חנות הדגמה קאטפורג'",
+    "phone": "052-5914007"
+  },
+  "VIP-2026": {
+    "storeId": "client_vip_1",
+    "storeName": "הקטלוג של דן",
+    "phone": "050-0000000"
+  }
+}

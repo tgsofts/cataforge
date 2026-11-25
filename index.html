@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>קאטפורג' – קטלוג 3 חכם</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Suez+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span>📦</span>
+      <span class="brand-name">קאטפורג'</span>
+    </div>
+    <div class="top-actions">
+      <div id="cloudStatus" class="cloud-chip local">🔒 ממתין לאישור</div>
+      <button id="soundToggleBtn" class="icon-btn" title="השתק / הפעל צלילים">🔊</button>
+      <button id="copyClientLinkBtn" class="icon-btn hidden" title="העתק קישור תצוגה ללקוחות">🔗</button>
+      <button id="logoutBtn" class="icon-btn hidden" title="יציאה מקטלוג">🚪</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- מסך שער כניסה לבעלי עסקים -->
+    <section id="loginView" class="login">
+      <div class="hero-icon">📦</div>
+      <h1>קטלוג <span class="hl">3</span></h1>
+      <p class="muted">הזינו את קוד הגישה האישי שקיבלתם כדי לנהל את הקטלוג שלכם</p>
+
+      <div class="login-card">
+        <label for="accessCodeInput">קוד גישה ייחודי</label>
+        <div class="code-row">
+          <input id="accessCodeInput" type="text" placeholder="לדוגמה: DEMO-100" maxlength="25" />
+        </div>
+        <button id="enterBtn" class="btn" type="button">כניסה לניהול הקטלוג ✨</button>
+
+        <div style="margin-top: 12px; padding-top: 14px; border-top: 1px dashed var(--line);">
+          <p class="muted" style="font-size: 14px; margin: 0 0 10px;">אין לכם קוד גישה? רוצים קטלוג חכם לעסק שלכם?</p>
+          <a href="https://wa.me/972525914007?text=%D7%94%D7%99%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%A7%D7%95%D7%93%20%D7%92%D7%99%D7%A9%D7%94%20%D7%9C%D7%A7%D7%90%D7%98%D7%A4%D7%95%D7%A8%D7%92%27" target="_blank" rel="noopener" class="btn wa-btn small" style="width: 100%;">
+            💬 דברו איתי לקבלת קוד (052-5914007)
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- מסך הקטלוג (ניהול או תצוגת לקוח) -->
+    <section id="boardView" class="hidden">
+      <div class="project-banner">
+        <div class="project-badge">🏪 <span id="activeStoreName"></span></div>
+        <div class="banner-actions">
+          <button id="shareWaBtn" class="btn wa-btn small">💬 שתף קטלוג לוואטסאפ</button>
+          <button id="exportExcelBtn" class="btn excel-btn small admin-only">📊 ייצוא לאקסל</button>
+          <button id="openFamiliesModalBtn" class="btn secondary small admin-only">🏷️ משפחות והנחות</button>
+          <button id="openAddModalBtn" class="btn small admin-only">+ מוצר חדש</button>
+        </div>
+      </div>
+
+      <div class="stats admin-only">
+        <div class="stat" style="--c: var(--todo)">
+          <span>📦</span>
+          <b id="statTotal">0</b>
+          <small>מוצרים בקטלוג</small>
+        </div>
+        <div class="stat" style="--c: var(--good)">
+          <span>✅</span>
+          <b id="statInStock">0</b>
+          <small>זמינים במלאי</small>
+        </div>
+        <div class="stat" style="--c: var(--pink)">
+          <span>🏷️</span>
+          <b id="statFamilies">0</b>
+          <small>משפחות מוצרים</small>
+        </div>
+        <div class="stat" style="--c: var(--gold)">
+          <span>🔥</span>
+          <b id="statOnSale">0</b>
+          <small>מוצרים במבצע</small>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <input id="searchInput" type="search" placeholder="🔍 חיפוש מוצר, מק״ט או תיאור..." />
+        <select id="filterFamily">
+          <option value="all">🏷️ כל המשפחות</option>
+        </select>
+        <select id="filterStock" class="admin-only">
+          <option value="all">כל המלאי</option>
+          <option value="in">✅ במלאי בלבד</option>
+          <option value="out">❌ אזל מהמלאי</option>
+        </select>
+        <select id="sortBy">
+          <option value="newest">🆕 מיון: הכי חדש</option>
+          <option value="priceAsc">💰 מחיר: מהנמוך לגבוה</option>
+          <option value="priceDesc">💎 מחיר: מהגבוה לנמוך</option>
+          <option value="name">🔤 שם מוצר (א-ת)</option>
+        </select>
+      </div>
+
+      <div id="productGrid" class="task-grid"></div>
+    </section>
+  </main>
+
+  <!-- אזור פרסומות מתחלפות מתוך ads.json -->
+  <section id="adZone" class="ad-zone hidden">
+    <div class="ad-label">📢 הודעות וחסויות</div>
+    <div id="adCard" class="ad-card"></div>
+    <div class="ad-progress"><i id="adBar"></i></div>
+    <div id="adDots" class="ad-dots"></div>
+  </section>
+
+  <!-- מודאל הוספה/עריכת מוצר -->
+  <div id="productModal" class="modal hidden">
+    <div class="modal-card">
+      <h2 id="modalTitle" style="margin-top:0">מוצר חדש</h2>
+      <form id="productForm" class="form">
+        <input type="hidden" id="prodId" />
+        <label>
+          משפחת מוצרים (קובעת הנחה גורפת)
+          <select id="prodFamily"></select>
+        </label>
+        <label>
+          שם המוצר *
+          <input id="prodName" type="text" required placeholder="למשל: אוזניות אלחוטיות Pro" />
+        </label>
+        <div class="form-row-2">
+          <label>
+            מחיר בסיס (₪) *
+            <input id="prodPrice" type="number" min="0" step="0.1" required placeholder="0" />
+          </label>
+          <label>
+            מק״ט (אופציונלי)
+            <input id="prodSku" type="text" placeholder="SKU-101" />
+          </label>
+        </div>
+        <label>
+          זמינות במלאי
+          <select id="prodStock">
+            <option value="true">✅ זמין במלאי</option>
+            <option value="false">❌ אזל מהמלאי</option>
+          </select>
+        </label>
+        <label>
+          תיאור קצר
+          <textarea id="prodDesc" rows="2" placeholder="מפרט, מידות, צבעים..."></textarea>
+        </label>
+        <div class="modal-actions">
+          <button type="button" id="closeProdModalBtn" class="btn secondary">ביטול</button>
+          <button type="submit" class="btn">שמירה 💾</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- מודאל ניהול משפחות והנחות -->
+  <div id="familiesModal" class="modal hidden">
+    <div class="modal-card">
+      <h2 style="margin-top:0">🏷️ ניהול משפחות והנחות</h2>
+      <p class="muted" style="font-size: 13.5px; margin-top: -6px;">שינוי אחוז הנחה למשפחה יעדכן מיד את כל המוצרים המשויכים אליה.</p>
+      
+      <form id="addFamilyForm" class="form" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line);">
+        <div class="form-row-2">
+          <input id="newFamName" type="text" placeholder="שם משפחה חדשה..." required />
+          <input id="newFamDiscount" type="number" min="0" max="100" placeholder="הנחה % (למשל 15)" value="0" />
+        </div>
+        <button type="submit" class="btn small">+ צור משפחה חדשה</button>
+      </form>
+
+      <div id="familiesList" class="form" style="max-height: 260px; overflow-y: auto;"></div>
+
+      <div class="modal-actions">
+        <button type="button" id="closeFamModalBtn" class="btn">סיום ושמירה ✅</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <footer class="site-footer">
+    קאטפורג' (קטלוג 3) · פותח באהבה על ידי TgSofts · 052-5914007
+  </footer>
+
+  <script src="config.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    // --- מנוע צלילים ---
+    let soundOn = localStorage.getItem('cataforge_sound') !== 'off';
+    const soundBtn = document.getElementById('soundToggleBtn');
+    soundBtn.textContent = soundOn ? '🔊' : '🔇';
+
+    let audioCtx = null;
+    function playTone(freqs, type = 'sine', duration = 0.14, gap = 0.07) {
+      if (!soundOn) return;
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const now = audioCtx.currentTime;
+        freqs.forEach((f, i) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(f, now + i * gap);
+          gain.gain.setValueAtTime(0.12, now + i * gap);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * gap + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now + i * gap);
+          osc.stop(now + i * gap + duration);
+        });
+      } catch (e) {}
+    }
+
+    const sfx = {
+      pop: () => playTone([520, 680], 'sine', 0.1, 0.04),
+      enter: () => playTone([440, 554.37, 659.25], 'triangle', 0.16, 0.07),
+      done: () => playTone([523.25, 659.25, 783.99, 1046.5], 'sine', 0.18, 0.08),
+      del: () => playTone([380, 260], 'sine', 0.14, 0.06)
+    };
+
+    soundBtn.onclick = () => {
+      soundOn = !soundOn;
+      localStorage.setItem('cataforge_sound', soundOn ? 'on' : 'off');
+      soundBtn.textContent = soundOn ? '🔊' : '🔇';
+      if (soundOn) sfx.pop();
+    };
+
+    function showToast(msg, type = 'good') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast show ${type}`;
+      setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, m => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[m]));
+    }
+
+    // --- מנוע פרסומות מתוך ads.json ---
+    async function initAds() {
+      try {
+        const res = await fetch('ads.json?t=' + Date.now());
+        if (!res.ok) return;
+        const ads = await res.json();
+        if (!Array.isArray(ads) || !ads.length) return;
+
+        const zone = document.getElementById('adZone');
+        const card = document.getElementById('adCard');
+        const bar = document.getElementById('adBar');
+        const dotsBox = document.getElementById('adDots');
+        zone.classList.remove('hidden');
+
+        let idx = 0;
+        let timer = null;
+        const DURATION = 6500;
+
+        dotsBox.innerHTML = ads.map((_, i) => `<button class="dot ${i === 0 ? 'on' : ''}" data-i="${i}" aria-label="פרסומת ${i+1}"></button>`).join('');
+        dotsBox.querySelectorAll('.dot').forEach(d => {
+          d.onclick = () => { idx = Number(d.dataset.i); showAd(); };
+        });
+
+        function showAd() {
+          const ad = ads[idx];
+          card.classList.remove('in');
+          void card.offsetWidth;
+          card.classList.add('in');
+
+          const phoneClean = (ad.phone || '').replace(/[^0-9]/g, '');
+          const waPhone = phoneClean.startsWith('0') ? '972' + phoneClean.slice(1) : phoneClean;
+
+          card.innerHTML = `
+            <div class="ad-icon">${escapeHtml(ad.icon || '✨')}</div>
+            <div class="ad-caption">${escapeHtml(ad.caption || '')}</div>
+            <div class="ad-phrase">${escapeHtml(ad.catchPhrase || '')}</div>
+            ${ad.phone ? `<a class="ad-phone" href="https://wa.me/${waPhone}" target="_blank" rel="noopener">📞 <span class="ltr">${escapeHtml(ad.phone)}</span></a>` : ''}
+            ${ad.link ? `<a class="btn secondary ad-link" href="${escapeHtml(ad.link)}" target="_blank" rel="noopener">לפרטים נוספים 🔗</a>` : ''}
+          `;
+
+          dotsBox.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('on', i === idx));
+
+          bar.style.transition = 'none';
+          bar.style.width = '0%';
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              bar.style.transition = `width ${DURATION}ms linear`;
+              bar.style.width = '100%';
+            });
+          });
+
+          clearTimeout(timer);
+          timer = setTimeout(() => {
+            idx = (idx + 1) % ads.length;
+            showAd();
+          }, DURATION);
+        }
+
+        showAd();
+      } catch (e) {
+        console.log('Ads skipped:', e);
+      }
+    }
+    initAds();
+
+    // --- ניהול גישה (מנהל מול מצב תצוגת לקוח Read-Only) ---
+    let db = null;
+    let unsubscribe = null;
+    let currentStore = null;
+    let isReadOnly = false;
+    let products = [];
+    let families = [];
+
+    const cloudChip = document.getElementById('cloudStatus');
+    function setCloudState(cls, text) {
+      cloudChip.className = 'cloud-chip ' + cls;
+      cloudChip.textContent = text;
+    }
+
+    function applyModeUI() {
+      document.querySelectorAll('.admin-only').forEach(el => {
+        el.classList.toggle('hidden', isReadOnly);
+      });
+      if (isReadOnly) {
+        document.getElementById('copyClientLinkBtn').classList.add('hidden');
+        document.getElementById('logoutBtn').classList.add('hidden');
+      } else {
+        document.getElementById('copyClientLinkBtn').classList.remove('hidden');
+        document.getElementById('logoutBtn').classList.remove('hidden');
+      }
+    }
+
+    async function openClientReadOnly(storeIdParam) {
+      try {
+        setCloudState('saving', '⏳ טוען קטלוג...');
+        // מנסה לשלוף פרטי חנות מתוך approved.json כדי לקבל טלפון ושם עדכני
+        let storeMeta = { storeId: storeIdParam, storeName: 'קטלוג מוצרים', phone: '052-5914007' };
+        try {
+          const res = await fetch('approved.json?t=' + Date.now());
+          if (res.ok) {
+            const approvedList = await res.json();
+            const found = Object.values(approvedList).find(s => s.storeId === storeIdParam);
+            if (found) storeMeta = { ...storeMeta, ...found };
+          }
+        } catch (e) {}
+
+        isReadOnly = true;
+        currentStore = storeMeta;
+        applyModeUI();
+        connectToStore();
+      } catch (err) {
+        console.error(err);
+        setCloudState('local', '⚠️ שגיאת טעינה');
+      }
+    }
+
+    async function verifyAndEnter(code) {
+      const cleanCode = code.trim().toUpperCase();
+      if (!cleanCode) return showToast('נא להזין קוד גישה', '');
+
+      try {
+        setCloudState('saving', '⏳ בודק אישור...');
+        const res = await fetch('approved.json?t=' + Date.now());
+        if (!res.ok) throw new Error('Missing approved.json');
+        const approvedList = await res.json();
+
+        const storeConfig = approvedList[cleanCode];
+        if (!storeConfig) {
+          setCloudState('local', '⛔ קוד לא מורשה');
+          sfx.del();
+          return showToast('קוד גישה שגוי או לא מאושר. צרו קשר לקבלת קוד.', '');
+        }
+
+        localStorage.setItem('cataforge_code', cleanCode);
+        isReadOnly = false;
+        currentStore = { code: cleanCode, ...storeConfig };
+        applyModeUI();
+        sfx.enter();
+        connectToStore();
+
+      } catch (err) {
+        console.error(err);
+        setCloudState('local', '⚠️ שגיאת טעינה');
+        showToast('לא ניתן לאמת קוד כרגע', '');
+      }
+    }
+
+    function connectToStore() {
+      document.getElementById('activeStoreName').textContent = currentStore.storeName || currentStore.storeId;
+      document.getElementById('loginView').classList.add('hidden');
+      document.getElementById('boardView').classList.remove('hidden');
+
+      if (window.CLOUD && window.CLOUD.apiKey && window.CLOUD.projectId) {
+        if (!db) {
+          const app = initializeApp({ apiKey: window.CLOUD.apiKey, projectId: window.CLOUD.projectId });
+          db = getFirestore(app);
+        }
+        if (unsubscribe) unsubscribe();
+        setCloudState('saving', '⏳ טוען...');
+
+        unsubscribe = onSnapshot(doc(db, 'cataforge_stores', currentStore.storeId), (snap) => {
+          if (snap.exists()) {
+            const data = snap.data();
+            products = data.products || [];
+            families = data.families || [];
+            if (data.storeName) {
+              currentStore.storeName = data.storeName;
+              document.getElementById('activeStoreName').textContent = data.storeName;
+            }
+          } else {
+            products = [];
+            families = [{ id: 'fam_general', name: 'כללי', discount: 0 }];
+          }
+          setCloudState('saved', isReadOnly ? '🛍️ תצוגת קטלוג' : '☁️ מסונכרן');
+          render();
+        }, (err) => {
+          console.error(err);
+          setCloudState('local', '⚠️ שגיאת ענן');
+        });
+      }
+    }
+
+    async function saveStoreData() {
+      if (isReadOnly) return;
+      render();
+      if (db && currentStore) {
+        setCloudState('saving', '⏳ שומר...');
+        await setDoc(doc(db, 'cataforge_stores', currentStore.storeId), {
+          storeName: currentStore.storeName,
+          phone: currentStore.phone || '',
+          products,
+          families,
+          updatedAt: Date.now()
+        });
+        setCloudState('saved', '☁️ נשמר בענן');
+      }
+    }
+
+    document.getElementById('enterBtn').onclick = () => verifyAndEnter(document.getElementById('accessCodeInput').value);
+    document.getElementById('accessCodeInput').onkeydown = (e) => { if (e.key === 'Enter') verifyAndEnter(e.target.value); };
+
+    // בדיקה אם נכנסו דרך קישור לקוח (?store=...) או דרך קוד שמור
+    const urlParams = new URLSearchParams(window.location.search);
+    const storeParam = urlParams.get('store');
+    if (storeParam) {
+      openClientReadOnly(storeParam.trim());
+    } else {
+      const savedCode = localStorage.getItem('cataforge_code');
+      if (savedCode) verifyAndEnter(savedCode);
+    }
+
+    document.getElementById('copyClientLinkBtn').onclick = () => {
+      if (!currentStore) return;
+      sfx.pop();
+      const baseUrl = window.location.origin + window.location.pathname;
+      const clientUrl = `${baseUrl}?store=${encodeURIComponent(currentStore.storeId)}`;
+      navigator.clipboard.writeText(clientUrl);
+      showToast('קישור הקטלוג ללקוחות הועתק! 🔗');
+    };
+
+    document.getElementById('logoutBtn').onclick = () => {
+      sfx.del();
+      localStorage.removeItem('cataforge_code');
+      if (unsubscribe) unsubscribe();
+      currentStore = null;
+      document.getElementById('boardView').classList.add('hidden');
+      document.getElementById('loginView').classList.remove('hidden');
+      document.getElementById('logoutBtn').classList.add('hidden');
+      document.getElementById('copyClientLinkBtn').classList.add('hidden');
+      setCloudState('local', '🔒 ממתין לאישור');
+    };
+
+    // --- ניהול משפחות והנחות ---
+    const famModal = document.getElementById('familiesModal');
+    document.getElementById('openFamiliesModalBtn').onclick = () => {
+      if (isReadOnly) return;
+      sfx.pop();
+      renderFamiliesModal();
+      famModal.classList.remove('hidden');
+    };
+    document.getElementById('closeFamModalBtn').onclick = async () => {
+      sfx.done();
+      famModal.classList.add('hidden');
+      await saveStoreData();
+      showToast('הגדרות המשפחות וההנחות עודכנו 🔥');
+    };
+
+    document.getElementById('addFamilyForm').onsubmit = async (e) => {
+      e.preventDefault();
+      if (isReadOnly) return;
+      const name = document.getElementById('newFamName').value.trim();
+      const discount = Math.min(100, Math.max(0, Number(document.getElementById('newFamDiscount').value) || 0));
+      if (!name) return;
+
+      families.push({ id: 'fam_' + Date.now(), name, discount });
+      document.getElementById('newFamName').value = '';
+      document.getElementById('newFamDiscount').value = '0';
+      sfx.pop();
+      renderFamiliesModal();
+    };
+
+    function renderFamiliesModal() {
+      const list = document.getElementById('familiesList');
+      list.innerHTML = families.map(f => `
+        <div class="family-row">
+          <div>
+            <strong>${escapeHtml(f.name)}</strong>
+            <div class="muted" style="font-size: 12px;">${products.filter(p => p.familyId === f.id).length} מוצרים</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:13px;">הנחה %:</span>
+            <input type="number" min="0" max="100" value="${f.discount || 0}" data-fam-id="${f.id}" class="fam-disc-input" />
+            ${families.length > 1 ? `<button type="button" class="icon-btn del-fam-btn" data-fam-id="${f.id}" style="width:32px;height:32px;font-size:14px;">🗑️</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      list.querySelectorAll('.fam-disc-input').forEach(inp => {
+        inp.onchange = (e) => {
+          const fam = families.find(x => x.id === e.target.dataset.famId);
+          if (fam) fam.discount = Math.min(100, Math.max(0, Number(e.target.value) || 0));
+        };
+      });
+
+      list.querySelectorAll('.del-fam-btn').forEach(btn => {
+        btn.onclick = () => {
+          sfx.del();
+          families = families.filter(x => x.id !== btn.dataset.famId);
+          renderFamiliesModal();
+        };
+      });
+    }
+
+    // --- הוספה ועריכת מוצר ---
+    const prodModal = document.getElementById('productModal');
+    document.getElementById('openAddModalBtn').onclick = () => {
+      if (isReadOnly) return;
+      sfx.pop();
+      openProdModal();
+    };
+    document.getElementById('closeProdModalBtn').onclick = () => prodModal.classList.add('hidden');
+
+    function openProdModal(prod = null) {
+      const famSelect = document.getElementById('prodFamily');
+      famSelect.innerHTML = families.map(f => `<option value="${f.id}">${escapeHtml(f.name)} ${f.discount > 0 ? `(${f.discount}% הנחה)` : ''}</option>`).join('');
+
+      document.getElementById('modalTitle').textContent = prod ? 'עריכת מוצר' : 'מוצר חדש';
+      document.getElementById('prodId').value = prod ? prod.id : '';
+      document.getElementById('prodFamily').value = prod ? prod.familyId : (families[0]?.id || '');
+      document.getElementById('prodName').value = prod ? prod.name : '';
+      document.getElementById('prodPrice').value = prod ? prod.basePrice : '';
+      document.getElementById('prodSku').value = prod ? (prod.sku || '') : '';
+      document.getElementById('prodStock').value = prod ? String(prod.inStock) : 'true';
+      document.getElementById('prodDesc').value = prod ? (prod.desc || '') : '';
+      prodModal.classList.remove('hidden');
+    }
+
+    document.getElementById('productForm').onsubmit = async (e) => {
+      e.preventDefault();
+      if (isReadOnly) return;
+      const id = document.getElementById('prodId').value;
+      const item = {
+        id: id || 'P-' + Date.now(),
+        familyId: document.getElementById('prodFamily').value,
+        name: document.getElementById('prodName').value.trim(),
+        basePrice: Number(document.getElementById('prodPrice').value) || 0,
+        sku: document.getElementById('prodSku').value.trim(),
+        inStock: document.getElementById('prodStock').value === 'true',
+        desc: document.getElementById('prodDesc').value.trim()
+      };
+
+      sfx.done();
+      if (id) {
+        const idx = products.findIndex(p => p.id === id);
+        if (idx > -1) products[idx] = item;
+        showToast('המוצר עודכן ✨');
+      } else {
+        products.unshift(item);
+        showToast('מוצר חדש נוסף לקטלוג 🎉');
+      }
+
+      prodModal.classList.add('hidden');
+      await saveStoreData();
+    };
+
+    // --- סינון, חישוב מחירים ותצוגה ---
+    function getEnrichedProducts() {
+      const famMap = Object.fromEntries(families.map(f => [f.id, f]));
+      return products.map(p => {
+        const fam = famMap[p.familyId] || { name: 'כללי', discount: 0 };
+        const discount = Number(fam.discount) || 0;
+        const finalPrice = Math.round((p.basePrice * (1 - discount / 100)) * 100) / 100;
+        return { ...p, familyName: fam.name, discount, finalPrice };
+      });
+    }
+
+    function getFilteredProducts() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const famFilter = document.getElementById('filterFamily').value;
+      const stockFilter = isReadOnly ? 'in' : document.getElementById('filterStock').value;
+
+      return getEnrichedProducts().filter(p => {
+        const matchFam = famFilter === 'all' || p.familyId === famFilter;
+        const matchStock = stockFilter === 'all' || (stockFilter === 'in' ? p.inStock : !p.inStock);
+        const matchText = !q || [p.name, p.desc, p.sku, p.familyName].some(f => (f || '').toLowerCase().includes(q));
+        return matchFam && matchStock && matchText;
+      });
+    }
+
+    document.getElementById('searchInput').oninput = render;
+    document.getElementById('filterFamily').onchange = () => { sfx.pop(); render(); };
+    document.getElementById('filterStock').onchange = () => { sfx.pop(); render(); };
+    document.getElementById('sortBy').onchange = () => { sfx.pop(); render(); };
+
+    function render() {
+      const famFilter = document.getElementById('filterFamily');
+      const curFam = famFilter.value;
+      famFilter.innerHTML = `<option value="all">🏷️ כל המשפחות</option>` +
+        families.map(f => `<option value="${f.id}">🏷️ ${escapeHtml(f.name)} ${f.discount > 0 ? `(-${f.discount}%)` : ''}</option>`).join('');
+      famFilter.value = [...famFilter.options].some(o => o.value === curFam) ? curFam : 'all';
+
+      const enrichedAll = getEnrichedProducts();
+      document.getElementById('statTotal').textContent = enrichedAll.length;
+      document.getElementById('statInStock').textContent = enrichedAll.filter(p => p.inStock).length;
+      document.getElementById('statFamilies').textContent = families.length;
+      document.getElementById('statOnSale').textContent = enrichedAll.filter(p => p.discount > 0).length;
+
+      let list = getFilteredProducts();
+      const sortMode = document.getElementById('sortBy').value;
+      if (sortMode === 'priceAsc') list.sort((a, b) => a.finalPrice - b.finalPrice);
+      else if (sortMode === 'priceDesc') list.sort((a, b) => b.finalPrice - a.finalPrice);
+      else if (sortMode === 'name') list.sort((a, b) => a.name.localeCompare(b.name, 'he'));
+
+      const grid = document.getElementById('productGrid');
+      if (!list.length) {
+        const emptyMsg = isReadOnly
+          ? 'אין כרגע מוצרים זמינים בקטלוג זה.'
+          : 'אין מוצרים להצגה. לחצו על "+ מוצר חדש" כדי להתחיל לבנות את הקטלוג!';
+        grid.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:var(--muted);">${emptyMsg}</div>`;
+        return;
+      }
+
+      const storePhoneClean = (currentStore?.phone || '0525914007').replace(/[^0-9]/g, '');
+      const waStorePhone = storePhoneClean.startsWith('0') ? '972' + storePhoneClean.slice(1) : storePhoneClean;
+
+      grid.innerHTML = list.map(p => {
+        const waOrderText = encodeURIComponent(`היי, אשמח להזמין מתוך הקטלוג (${currentStore.storeName}):
+*${p.name}* (${p.finalPrice} ₪)`);
+        const adminBtns = isReadOnly ? '' : `
+          <div class="t-actions">
+            <button class="icon-btn edit-btn" data-id="${p.id}" title="עריכה" style="width:34px;height:34px;font-size:15px">✏️</button>
+            <button class="icon-btn del-btn" data-id="${p.id}" title="מחיקה" style="width:34px;height:34px;font-size:15px">🗑️</button>
+          </div>
+        `;
+
+        return `
+        <div class="task-card ${p.inStock ? 'st-done' : 'st-waiting'}" style="--c: ${p.inStock ? 'var(--good)' : 'var(--bad)'}; opacity: ${p.inStock ? '1' : '0.75'};">
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span class="t-topic" style="margin:0;">🏷️ ${escapeHtml(p.familyName)}</span>
+              ${p.discount > 0 ? `<span class="discount-badge">🔥 ${p.discount}% הנחה</span>` : ''}
+            </div>
+
+            <div class="t-top">
+              <h3 class="t-title" style="text-decoration:none; color:var(--text);">${escapeHtml(p.name)}</h3>
+              <span class="t-price">
+                ${p.discount > 0 ? `<span class="old-price">${p.basePrice} ₪</span>` : ''}
+                ${p.finalPrice.toLocaleString()} ₪
+              </span>
+            </div>
+
+            ${p.sku ? `<div class="muted" style="font-size:12px; margin-top:4px;">מק״ט: <span class="ltr">${escapeHtml(p.sku)}</span></div>` : ''}
+            ${p.desc ? `<p class="t-desc" style="margin-top:8px;">${escapeHtml(p.desc)}</p>` : ''}
+          </div>
+
+          <div class="t-footer">
+            <a href="https://wa.me/${waStorePhone}?text=${waOrderText}" target="_blank" rel="noopener" class="t-action-pill wa">
+              💬 הזמן בוואטסאפ
+            </a>
+            ${adminBtns}
+          </div>
+        </div>
+      `}).join('');
+
+      if (!isReadOnly) {
+        grid.querySelectorAll('.edit-btn').forEach(btn => {
+          btn.onclick = () => {
+            sfx.pop();
+            const prod = products.find(x => x.id === btn.dataset.id);
+            if (prod) openProdModal(prod);
+          };
+        });
+
+        grid.querySelectorAll('.del-btn').forEach(btn => {
+          btn.onclick = async () => {
+            if (confirm('למחוק מוצר זה מהקטלוג?')) {
+              sfx.del();
+              products = products.filter(x => x.id !== btn.dataset.id);
+              await saveStoreData();
+              showToast('המוצר נמחק', '');
+            }
+          };
+        });
+      }
+    }
+
+    // --- שיתוף קטלוג לוואטסאפ ---
+    document.getElementById('shareWaBtn').onclick = () => {
+      sfx.pop();
+      const visible = getFilteredProducts().filter(p => p.inStock);
+      if (!visible.length) return showToast('אין מוצרים זמינים לשיתוף', '');
+
+      const baseUrl = window.location.origin + window.location.pathname;
+      const clientUrl = `${baseUrl}?store=${encodeURIComponent(currentStore.storeId)}`;
+
+      let lines = [`📦 *קטלוג ${currentStore.storeName}*`, `------------------`];
+      visible.forEach(p => {
+        const saleTag = p.discount > 0 ? ` *(במבצע ${p.discount}% הנחה!)*` : '';
+        lines.push(`▪️ *${p.name}* — ${p.finalPrice.toLocaleString()} ₪${saleTag}`);
+      });
+      lines.push(`
+🔗 לצפייה והזמנה בקטלוג המלא:
+${clientUrl}`);
+
+      window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('
+'))}`, '_blank', 'noopener');
+    };
+
+    // --- ייצוא לאקסל ---
+    document.getElementById('exportExcelBtn').onclick = () => {
+      if (isReadOnly) return;
+      sfx.pop();
+      const visible = getFilteredProducts();
+      if (!visible.length) return showToast('אין מוצרים לייצוא', '');
+
+      const headers = ['משפחה', 'שם מוצר', 'מק״ט', 'מחיר בסיס', 'הנחה %', 'מחיר סופי', 'במלאי', 'תיאור'];
+      const rows = visible.map(p => [
+        p.familyName, p.name, p.sku || '', p.basePrice, p.discount, p.finalPrice, p.inStock ? 'כן' : 'לא', p.desc || ''
+      ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+
+      const blob = new Blob(['﻿' + [headers.join(','), ...rows].join('
+')], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `Cataforge_${currentStore.storeId}_${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+      showToast('קובץ האקסל ירד למחשב 📊');
+    };
+  </script>
+</body>
+</html>
