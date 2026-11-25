@@ -172,7 +172,7 @@
   };
   closeBtn.onclick = () => modal.classList.add('hidden');
 
-  sendBtn.onclick = () => {
+    sendBtn.onclick = () => {
     if (!cart.length) return;
     const NL = String.fromCharCode(10);
     const storeName = (document.getElementById('activeStoreName')?.textContent || 'החנות').trim();
@@ -191,8 +191,10 @@
     if (nameInp.value.trim()) lines.push('👤 שם: ' + nameInp.value.trim());
     if (noteInp.value.trim()) lines.push('📝 הערות: ' + noteInp.value.trim());
 
-    const text = encodeURIComponent(lines.join(NL));
-    window.open('https://wa.me' + storeWhatsapp + '?text=' + text, '_blank', 'noopener');
+    const phoneClean = String(storeWhatsapp || '972525914007').replace(/[^0-9]/g, '');
+    const waPhone = phoneClean.startsWith('0') ? '972' + phoneClean.slice(1) : phoneClean;
+    const waUrl = `https://wa.me{waPhone}?text=${encodeURIComponent(lines.join(NL))}`;
+    window.open(waUrl, '_blank', 'noopener');
   };
 
   function upgradeCards() {
