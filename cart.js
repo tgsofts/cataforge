@@ -193,7 +193,9 @@
 
     const phoneClean = String(storeWhatsapp || '972525914007').replace(/[^0-9]/g, '');
     const waPhone = phoneClean.startsWith('0') ? '972' + phoneClean.slice(1) : phoneClean;
-    const waUrl = `https://wa.me{waPhone}?text=${encodeURIComponent(lines.join(NL))}`;
+   
+    const waUrl = 'https://wa.me' + waPhone + '?text=' + encodeURIComponent(lines.join(NL));
+
     window.open(waUrl, '_blank', 'noopener');
   };
 
