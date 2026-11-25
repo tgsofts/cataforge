@@ -200,15 +200,18 @@
 
   };
 
-  function upgradeCards() {
+    function upgradeCards() {
     document.querySelectorAll('#productGrid .task').forEach(cardEl => {
+      const btnsBox = cardEl.querySelector('.card-btns');
+      if (!btnsBox) return;
+
       if (isClientView) {
         if (cardEl.classList.contains('out-of-stock')) {
           cardEl.style.display = 'none';
           return;
         }
-        const btnsBox = cardEl.querySelector('.card-btns');
-        if (!btnsBox || btnsBox.querySelector('.cf-add-cart')) return;
+        btnsBox.querySelectorAll('.edit-btn, .del-btn').forEach(b => b.classList.add('hidden'));
+        if (btnsBox.querySelector('.cf-add-cart')) return;
 
         const prodName = (cardEl.querySelector('h3')?.textContent || '').trim();
         const priceTxt = (cardEl.querySelector('.final-price')?.textContent || '0').replace(/[^\d.]/g, '');
@@ -216,7 +219,6 @@
         const skuSpan = Array.from(cardEl.querySelectorAll('.task-foot span')).find(s => s.textContent.includes('מק״ט:'));
         const sku = skuSpan ? skuSpan.textContent.replace('מק״ט:', '').trim() : '';
 
-        btnsBox.innerHTML = '';
         const addBtn = document.createElement('button');
         addBtn.type = 'button';
         addBtn.className = 'order-wa-btn cf-add-cart';
@@ -231,6 +233,8 @@
         btnsBox.appendChild(addBtn);
       } else {
         cardEl.style.display = '';
+        btnsBox.querySelectorAll('.cf-add-cart').forEach(b => b.remove());
+        btnsBox.querySelectorAll('.edit-btn, .del-btn').forEach(b => b.classList.remove('hidden'));
       }
     });
   }
