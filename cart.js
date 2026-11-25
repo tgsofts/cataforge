@@ -194,11 +194,10 @@
     const phoneClean = String(storeWhatsapp || '972525914007').replace(/[^0-9]/g, '');
     const waPhone = phoneClean.startsWith('0') ? '972' + phoneClean.slice(1) : phoneClean;
    
-        const SL = String.fromCharCode(47);
-    const waUrl = 'https:' + SL + SL + 'wa.me' + SL + waPhone + '?text=' + encodeURIComponent(lines.join(NL));
-
-
+       const SL = String.fromCharCode(47);
+    const waUrl = 'https:' + SL + SL + 'wa.me' + SL + '?text=' + encodeURIComponent(lines.join(NL));
     window.open(waUrl, '_blank', 'noopener');
+
   };
 
   function upgradeCards() {
