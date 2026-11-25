@@ -253,4 +253,64 @@
     if (isClientView) setPreviewMode(true);
     else upgradeCards();
   }
+
+  // --- הגבלת כמות מוצרים לפי חבילה (maxProducts ב-approved.json) ---
+  let maxAllowedProducts = 50; // ברירת מחדל אם לא הוגדר ב-JSON
+
+  fetch('approved.json?t=' + Date.now())
+    .then(r => r.ok ? r.json() : {})
+    .then(data => {
+      const savedCode = (localStorage.getItem('cataforge_saved_code') || '').toUpperCase();
+      for (const [code, info] of Object.entries(data)) {
+        if ((storeParam && info.storeId === storeParam) || (!storeParam && code === savedCode)) {
+          if (typeof info.maxProducts === 'number' && info.maxProducts > 0) {
+            maxAllowedProducts = info.maxProducts;
+          }
+          break;
+        }
+      }
+      updateQuotaBadge();
+    })
+    .catch(() => {});
+
+  const quotaBadge = document.createElement('span');
+  quotaBadge.className = 'admin-only';
+  quotaBadge.style.cssText = 'font-size:12.5px; opacity:0.85; margin-right:8px; background:rgba(255,255,255,0.1); padding:3px 9px; border-radius:999px;';
+  const storeBanner = document.querySelector('.project-badge');
+  if (storeBanner) storeBanner.appendChild(quotaBadge);
+
+  function getCurrentProductCount() {
+    return document.querySelectorAll('#productGrid .task').length;
+  }
+
+  function updateQuotaBadge() {
+    if (isClientView) return;
+    const count = getCurrentProductCount();
+    quotaBadge.textContent = count + ' / ' + maxAllowedProducts + ' מוצרים';
+    quotaBadge.style.color = count >= maxAllowedProducts ? '#fca5a5' : '#a7f3d0';
+  }
+
+  if (grid) {
+    const qObsConfig = Object.fromEntries([['childList', true]]);
+    new MutationObserver(updateQuotaBadge).observe(grid, qObsConfig);
+  }
+
+  // חסימת כפתור "+ מוצר חדש" כשמגיעים למכסה (ללא חסימת עריכת מוצר קיים)
+  document.addEventListener('click', (e) => {
+    const addBtn = e.target.closest('#openAddModalBtn');
+    if (!addBtn) return;
+    const count = getCurrentProductCount();
+    if (count >= maxAllowedProducts) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      const t = document.getElementById('toast');
+      if (t) {
+        t.textContent = 'הגעת למכסת המוצרים בחבילה (' + maxAllowedProducts + '). לשדרוג החבילה פנה אלינו 📞';
+        t.className = 'toast show bad';
+        setTimeout(() => t.classList.remove('show'), 3800);
+      }
+    }
+  }, true);
+
+  
 })();
