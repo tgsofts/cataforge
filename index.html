@@ -7,6 +7,82 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Suez+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <style>
+    .scan-inline-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      color: #fff;
+      border-radius: 12px;
+      padding: 0 12px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-height: 42px;
+      transition: .18s;
+      white-space: nowrap;
+    }
+    .scan-inline-btn:hover {
+      background: rgba(255,255,255,0.16);
+      transform: translateY(-1px);
+    }
+    .search-scan-wrap {
+      display: flex;
+      gap: 6px;
+      flex: 1 1 240px;
+    }
+    .search-scan-wrap input {
+      flex: 1;
+      min-width: 0;
+    }
+    .sku-input-wrap {
+      display: flex;
+      gap: 6px;
+    }
+    .sku-input-wrap input {
+      flex: 1;
+      min-width: 0;
+    }
+    .barcode-chip-btn {
+      background: rgba(56, 189, 248, 0.14);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #7dd3fc;
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      margin-right: 6px;
+    }
+    .barcode-chip-btn:hover {
+      background: rgba(56, 189, 248, 0.25);
+    }
+    #scannerReader {
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      background: #000;
+      margin: 12px 0;
+    }
+    .barcode-preview-box {
+      background: #ffffff;
+      padding: 18px 14px;
+      border-radius: 14px;
+      text-align: center;
+      margin: 14px 0;
+    }
+    .barcode-preview-box svg {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
 </head>
 <body>
   <div class="bg-grid"></div>
@@ -25,7 +101,6 @@
   </header>
 
   <main>
-    <!-- מסך שער כניסה לבעלי עסקים -->
     <section id="loginView" class="login">
       <div class="hero-icon">📦</div>
       <h1>קטלוג <span class="hl">3</span></h1>
@@ -47,7 +122,6 @@
       </div>
     </section>
 
-    <!-- מסך הקטלוג (ניהול או תצוגת לקוח) -->
     <section id="boardView" class="hidden">
       <div class="project-banner">
         <div class="project-badge">🏪 <span id="activeStoreName"></span></div>
@@ -83,7 +157,10 @@
       </div>
 
       <div class="toolbar">
-        <input id="searchInput" type="search" placeholder="🔍 חיפוש מוצר, מק״ט או תיאור..." />
+        <div class="search-scan-wrap">
+          <input id="searchInput" type="search" placeholder="🔍 חיפוש מוצר, מק״ט / ברקוד..." />
+          <button type="button" id="scanSearchBtn" class="scan-inline-btn" title="סרוק ברקוד לחיפוש">📷 סרוק</button>
+        </div>
         <select id="filterFamily">
           <option value="all">🏷️ כל המשפחות</option>
         </select>
@@ -104,7 +181,6 @@
     </section>
   </main>
 
-  <!-- אזור פרסומות מתחלפות מתוך ads.json (מוצג בדף הנחיתה בלבד) -->
   <section id="adZone" class="ad-zone hidden">
     <div class="ad-label">📢 הודעות וחסויות</div>
     <div id="adCard" class="ad-card"></div>
@@ -112,7 +188,6 @@
     <div id="adDots" class="ad-dots"></div>
   </section>
 
-  <!-- מודאל הוספה/עריכת מוצר -->
   <div id="productModal" class="modal hidden">
     <div class="modal-card">
       <h2 id="modalTitle" style="margin-top:0">מוצר חדש</h2>
@@ -132,8 +207,11 @@
             <input id="prodPrice" type="number" min="0" step="0.1" required placeholder="0" />
           </label>
           <label>
-            מק״ט (אופציונלי)
-            <input id="prodSku" type="text" placeholder="SKU-101" />
+            מק״ט / ברקוד (אופציונלי)
+            <div class="sku-input-wrap">
+              <input id="prodSku" type="text" placeholder="סרוק או הקלד..." />
+              <button type="button" id="scanSkuBtn" class="scan-inline-btn" title="סרוק ברקוד במצלמה">📷</button>
+            </div>
           </label>
         </div>
         <label>
@@ -155,7 +233,6 @@
     </div>
   </div>
 
-  <!-- מודאל ניהול משפחות והנחות -->
   <div id="familiesModal" class="modal hidden">
     <div class="modal-card">
       <h2 style="margin-top:0">🏷️ ניהול משפחות והנחות</h2>
@@ -177,6 +254,29 @@
     </div>
   </div>
 
+  <div id="scannerModal" class="modal hidden">
+    <div class="modal-card">
+      <h2 style="margin-top:0">📷 סריקת ברקוד</h2>
+      <p class="muted" style="font-size: 13.5px; margin-top: -6px;">כוונו את המצלמה אל הברקוד שעל גבי המוצר</p>
+      <div id="scannerReader"></div>
+      <div class="modal-actions">
+        <button type="button" id="closeScannerBtn" class="btn secondary">סגור מצלמה</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="barcodeViewModal" class="modal hidden">
+    <div class="modal-card" style="text-align:center;">
+      <h2 id="barcodeProdTitle" style="margin-top:0">ברקוד מוצר</h2>
+      <div class="barcode-preview-box">
+        <svg id="barcodeSvg"></svg>
+      </div>
+      <div class="modal-actions" style="justify-content: center;">
+        <button type="button" id="closeBarcodeViewBtn" class="btn">סגור ✅</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
 
   <footer class="site-footer">
@@ -188,7 +288,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // --- מנוע צלילים ---
     let soundOn = localStorage.getItem('cataforge_sound') !== 'off';
     const soundBtn = document.getElementById('soundToggleBtn');
     soundBtn.textContent = soundOn ? '🔊' : '🔇';
@@ -219,7 +318,7 @@
       pop: () => playTone([520], 'sine', 0.08, 0),
       success: () => playTone([523.25, 659.25, 783.99], 'triangle', 0.16, 0.07),
       delete: () => playTone([320, 220], 'sawtooth', 0.12, 0.06),
-      error: () => playTone([200, 150], 'sawtooth', 0.16, 0.09)
+      error: () => playTone([220, 180], 'sawtooth', 0.16, 0.09)
     };
 
     soundBtn.onclick = () => {
@@ -229,7 +328,6 @@
       if (soundOn) sfx.pop();
     };
 
-    // --- כלי עזר ---
     const toastEl = document.getElementById('toast');
     let toastTimer = null;
     function showToast(msg, type = 'good') {
@@ -245,7 +343,6 @@
       }[m]));
     }
 
-    // --- חיבור לענן Firebase ---
     let db = null;
     const cloudChip = document.getElementById('cloudStatus');
     try {
@@ -260,7 +357,6 @@
       console.error('Firebase init error:', err);
     }
 
-    // --- ניהול מצב ---
     let approvedClients = {};
     let currentStore = null;
     let isReadOnly = false;
@@ -282,7 +378,7 @@
           familyId: 'fam_1',
           name: 'אוזניות אלחוטיות Pro',
           price: 290,
-          sku: 'AUDIO-01',
+          sku: '7290012345678',
           inStock: true,
           desc: 'ביטול רעשים אקטיבי וטעינה מהירה',
           createdAt: Date.now()
@@ -292,7 +388,7 @@
           familyId: 'fam_2',
           name: 'מעמד שולחני מתכוונן',
           price: 85,
-          sku: 'ACC-14',
+          sku: 'ACC-1402',
           inStock: true,
           desc: 'מתאים לכל סוגי הסמארטפונים והטאבלטים',
           createdAt: Date.now() - 1000
@@ -300,14 +396,11 @@
       ]
     };
 
-    // --- טעינת רשימת לקוחות ופרסומות ---
     async function loadApprovedClients() {
       try {
         const res = await fetch('approved.json?t=' + Date.now());
         if (res.ok) approvedClients = await res.json();
-      } catch (e) {
-        console.warn('Could not load approved.json', e);
-      }
+      } catch (e) {}
       if (!approvedClients['DEMO-100']) {
         approvedClients['DEMO-100'] = {
           storeId: 'demo_store',
@@ -324,8 +417,6 @@
         if (!res.ok) return;
         const ads = await res.json();
         if (!Array.isArray(ads) || !ads.length) return;
-
-        // מציג פרסומות רק אם עדיין נמצאים במסך הנחיתה
         if (currentStore) return;
 
         const zone = document.getElementById('adZone');
@@ -371,6 +462,7 @@
         renderAd(0);
         restartBar();
         setInterval(() => {
+          if (currentStore) return;
           idx = (idx + 1) % ads.length;
           renderAd(idx);
           restartBar();
@@ -378,7 +470,6 @@
       } catch (e) {}
     }
 
-    // --- כניסה וטעינת חנות ---
     function findStoreById(storeId) {
       for (const [code, info] of Object.entries(approvedClients)) {
         if (info.storeId === storeId && info.active !== false) {
@@ -472,7 +563,6 @@
       }
     }
 
-    // --- חישוב ורינדור ---
     function getEnrichedProducts() {
       const famMap = new Map(storeData.families.map(f => [f.id, f]));
       return storeData.products.map(p => {
@@ -566,7 +656,9 @@
             </div>
 
             <div class="task-foot">
-              <span>${p.sku ? `מק״ט: ${escapeHtml(p.sku)}` : ''}</span>
+              <div>
+                ${p.sku ? `<span>מק״ט: ${escapeHtml(p.sku)}</span><button type="button" class="barcode-chip-btn show-bc-btn" data-sku="${escapeHtml(p.sku)}" data-name="${escapeHtml(p.name)}">📊 ברקוד</button>` : ''}
+              </div>
               <div class="card-btns">
                 ${isReadOnly ? `
                   <a href="${waHref}" target="_blank" rel="noopener" class="order-wa-btn">💬 הזמנה בוואטסאפ</a>
@@ -579,6 +671,10 @@
           </article>
         `;
       }).join('');
+
+      grid.querySelectorAll('.show-bc-btn').forEach(btn => {
+        btn.onclick = () => openBarcodePreview(btn.dataset.sku, btn.dataset.name);
+      });
 
       if (!isReadOnly) {
         grid.querySelectorAll('.edit-btn').forEach(btn => {
@@ -597,7 +693,87 @@
       }
     }
 
-    // --- מודאל מוצר ---
+    const barcodeViewModal = document.getElementById('barcodeViewModal');
+    function openBarcodePreview(sku, prodName) {
+      if (!sku) return;
+      sfx.pop();
+      document.getElementById('barcodeProdTitle').textContent = prodName;
+      barcodeViewModal.classList.remove('hidden');
+      try {
+        if (window.JsBarcode) {
+          JsBarcode('#barcodeSvg', sku, {
+            format: 'CODE128',
+            lineColor: '#0f172a',
+            width: 2.2,
+            height: 75,
+            displayValue: true,
+            fontSize: 16
+          });
+        }
+      } catch (e) {
+        showToast('לא ניתן ליצור ברקוד מתווים אלו', 'bad');
+      }
+    }
+    document.getElementById('closeBarcodeViewBtn').onclick = () => barcodeViewModal.classList.add('hidden');
+
+    const scannerModal = document.getElementById('scannerModal');
+    let html5QrScanner = null;
+    let scannerTargetInput = null;
+
+    async function stopScanner() {
+      if (html5QrScanner) {
+        try {
+          await html5QrScanner.stop();
+          html5QrScanner.clear();
+        } catch (e) {}
+        html5QrScanner = null;
+      }
+      scannerModal.classList.add('hidden');
+    }
+
+    async function startScanner(targetInputId) {
+      scannerTargetInput = document.getElementById(targetInputId);
+      if (!window.Html5Qrcode) {
+        showToast('רכיב המצלמה עדיין נטען, נסה שוב בעוד רגע', 'bad');
+        return;
+      }
+      sfx.pop();
+      scannerModal.classList.remove('hidden');
+      try {
+        html5QrScanner = new Html5Qrcode('scannerReader');
+        await html5QrScanner.start(
+          { facingMode: 'environment' },
+          { fps: 10, qrbox: { width: 250, height: 140 } },
+          async (decodedText) => {
+            sfx.success();
+            if (scannerTargetInput) {
+              scannerTargetInput.value = decodedText;
+              scannerTargetInput.dispatchEvent(new Event('input'));
+            }
+            showToast(`נסרק ברקוד: ${decodedText} ✅`);
+            await stopScanner();
+          },
+          () => {}
+        );
+      } catch (err) {
+        console.error('Camera error:', err);
+        showToast('לא ניתן לגשת למצלמה (בדוק הרשאות בדפדפן)', 'bad');
+        await stopScanner();
+      }
+    }
+
+    document.getElementById('scanSearchBtn').onclick = () => startScanner('searchInput');
+    document.getElementById('scanSkuBtn').onclick = () => startScanner('prodSku');
+    document.getElementById('closeScannerBtn').onclick = stopScanner;
+
+    document.getElementById('prodSku').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sfx.pop();
+        document.getElementById('prodDesc').focus();
+      }
+    });
+
     const prodModal = document.getElementById('productModal');
     function openProductModal(prodId = null) {
       if (isReadOnly) return;
@@ -658,7 +834,6 @@
       showToast(id ? 'המוצר עודכן בהצלחה ✅' : 'המוצר נוסף לקטלוג ✨');
     };
 
-    // --- מודאל משפחות והנחות ---
     const famModal = document.getElementById('familiesModal');
     function renderFamiliesList() {
       const listEl = document.getElementById('familiesList');
@@ -724,7 +899,6 @@
       showToast('הגדרות המשפחות נשמרו 💾');
     };
 
-    // --- אירועי סינון, שיתוף, ייצוא והתחברות ---
     ['searchInput', 'filterFamily', 'filterStock', 'sortBy'].forEach(id => {
       document.getElementById(id).addEventListener('input', renderAll);
       document.getElementById(id).addEventListener('change', renderAll);
@@ -751,9 +925,12 @@
         const saleTag = p.discount > 0 ? ` *(במבצע ${p.discount}% הנחה!)*` : '';
         lines.push(`▪️ *${p.name}* — ${p.finalPrice.toLocaleString()} ₪${saleTag}`);
       });
-      lines.push(`\n🔗 לצפייה והזמנה בקטלוג המלא:\n${clientUrl}`);
+      lines.push(`
+🔗 לצפייה והזמנה בקטלוג המלא:
+${clientUrl}`);
 
-      window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
+      window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('
+'))}`, '_blank', 'noopener');
     };
 
     document.getElementById('exportExcelBtn').onclick = () => {
@@ -762,12 +939,13 @@
       const visible = getFilteredProducts();
       if (!visible.length) return showToast('אין מוצרים לייצוא', '');
 
-      const headers = ['משפחה', 'שם מוצר', 'מק״ט', 'מחיר בסיס', 'הנחה %', 'מחיר סופי', 'במלאי', 'תיאור'];
+      const headers = ['משפחה', 'שם מוצר', 'מק״ט / ברקוד', 'מחיר בסיס', 'הנחה %', 'מחיר סופי', 'במלאי', 'תיאור'];
       const rows = visible.map(p => [
         p.familyName, p.name, p.sku || '', p.basePrice, p.discount, p.finalPrice, p.inStock ? 'כן' : 'לא', p.desc || ''
       ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
 
-      const blob = new Blob(['\uFEFF' + [headers.join(','), ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const blob = new Blob(['﻿' + [headers.join(','), ...rows].join('
+')], { type: 'text/csv;charset=utf-8;' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `Cataforge_${currentStore.storeId}_${new Date().toISOString().slice(0, 10)}.csv`;
@@ -798,7 +976,6 @@
       window.location.href = window.location.origin + window.location.pathname;
     };
 
-    // --- אתחול ראשוני ---
     (async function boot() {
       await loadApprovedClients();
 
@@ -818,7 +995,6 @@
         return;
       }
 
-      // נטען ומציג פרסומות רק כשנשארים בדף הנחיתה
       initAds();
     })();
   </script>
