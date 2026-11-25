@@ -104,7 +104,7 @@
     </section>
   </main>
 
-  <!-- אזור פרסומות מתחלפות מתוך ads.json -->
+  <!-- אזור פרסומות מתחלפות מתוך ads.json (מוצג בדף הנחיתה בלבד) -->
   <section id="adZone" class="ad-zone hidden">
     <div class="ad-label">📢 הודעות וחסויות</div>
     <div id="adCard" class="ad-card"></div>
@@ -219,7 +219,7 @@
       pop: () => playTone([520], 'sine', 0.08, 0),
       success: () => playTone([523.25, 659.25, 783.99], 'triangle', 0.16, 0.07),
       delete: () => playTone([320, 220], 'sawtooth', 0.12, 0.06),
-      error: () => playTone([220, 180], 'sawtooth', 0.16, 0.09)
+      error: () => playTone([200, 150], 'sawtooth', 0.16, 0.09)
     };
 
     soundBtn.onclick = () => {
@@ -325,6 +325,9 @@
         const ads = await res.json();
         if (!Array.isArray(ads) || !ads.length) return;
 
+        // מציג פרסומות רק אם עדיין נמצאים במסך הנחיתה
+        if (currentStore) return;
+
         const zone = document.getElementById('adZone');
         const card = document.getElementById('adCard');
         const dots = document.getElementById('adDots');
@@ -391,7 +394,6 @@
 
       document.getElementById('loginView').classList.add('hidden');
       document.getElementById('adZone').classList.add('hidden');
-
       document.getElementById('boardView').classList.remove('hidden');
       document.getElementById('logoutBtn').classList.remove('hidden');
       document.getElementById('activeStoreName').textContent = storeInfo.storeName;
@@ -540,7 +542,9 @@
 
       grid.innerHTML = visible.map(p => {
         const waPhone = (currentStore.whatsapp || '').replace(/\D/g, '');
-        const waMsg = encodeURIComponent(`היי ${currentStore.storeName}, אשמח להזמין:\n*${p.name}*${p.sku ? ` (מק"ט: ${p.sku})` : ''}\nמחיר: ${p.finalPrice.toLocaleString()} ₪`);
+        const waMsg = encodeURIComponent(`היי ${currentStore.storeName}, אשמח להזמין:
+*${p.name}*${p.sku ? ` (מק"ט: ${p.sku})` : ''}
+מחיר: ${p.finalPrice.toLocaleString()} ₪`);
         const waHref = waPhone ? `https://wa.me/${waPhone}?text=${waMsg}` : `https://wa.me/?text=${waMsg}`;
 
         return `
@@ -797,7 +801,6 @@
     // --- אתחול ראשוני ---
     (async function boot() {
       await loadApprovedClients();
-      initAds();
 
       const params = new URLSearchParams(window.location.search);
       const storeParam = params.get('store');
@@ -812,7 +815,11 @@
       const savedCode = localStorage.getItem('cataforge_saved_code');
       if (savedCode && approvedClients[savedCode] && approvedClients[savedCode].active !== false) {
         openStore({ ...approvedClients[savedCode], code: savedCode }, false);
+        return;
       }
+
+      // נטען ומציג פרסומות רק כשנשארים בדף הנחיתה
+      initAds();
     })();
   </script>
 </body>
