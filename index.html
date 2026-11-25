@@ -925,12 +925,10 @@
         const saleTag = p.discount > 0 ? ` *(במבצע ${p.discount}% הנחה!)*` : '';
         lines.push(`▪️ *${p.name}* — ${p.finalPrice.toLocaleString()} ₪${saleTag}`);
       });
-      lines.push(`
-🔗 לצפייה והזמנה בקטלוג המלא:
-${clientUrl}`);
+      const NL = String.fromCharCode(10);
+      lines.push(NL + '🔗 לצפייה והזמנה בקטלוג המלא:' + NL + clientUrl);
 
-      window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('
-'))}`, '_blank', 'noopener');
+      window.open(`https://wa.me{encodeURIComponent(lines.join(NL))}`, '_blank', 'noopener');
     };
 
     document.getElementById('exportExcelBtn').onclick = () => {
@@ -939,13 +937,13 @@ ${clientUrl}`);
       const visible = getFilteredProducts();
       if (!visible.length) return showToast('אין מוצרים לייצוא', '');
 
+      const NL = String.fromCharCode(10);
       const headers = ['משפחה', 'שם מוצר', 'מק״ט / ברקוד', 'מחיר בסיס', 'הנחה %', 'מחיר סופי', 'במלאי', 'תיאור'];
       const rows = visible.map(p => [
         p.familyName, p.name, p.sku || '', p.basePrice, p.discount, p.finalPrice, p.inStock ? 'כן' : 'לא', p.desc || ''
       ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
 
-      const blob = new Blob(['﻿' + [headers.join(','), ...rows].join('
-')], { type: 'text/csv;charset=utf-8;' });
+      const blob = new Blob(['\uFEFF' + [headers.join(','), ...rows].join(NL)], { type: 'text/csv;charset=utf-8;' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `Cataforge_${currentStore.storeId}_${new Date().toISOString().slice(0, 10)}.csv`;
