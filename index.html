@@ -720,13 +720,10 @@
         const saleTag = p.discount > 0 ? ` *(במבצע ${p.discount}% הנחה!)*` : '';
         lines.push(`▪️ *${p.name}* — ${p.finalPrice.toLocaleString()} ₪${saleTag}`);
       });
-      lines.push(`
-🔗 לצפייה והזמנה בקטלוג המלא:
-${clientUrl}`);
+            lines.push(`\n🔗 לצפייה והזמנה בקטלוג המלא:\n${clientUrl}`);
 
-      window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('
-'))}`, '_blank', 'noopener');
-    };
+      window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
+
 
     // --- ייצוא לאקסל ---
     document.getElementById('exportExcelBtn').onclick = () => {
