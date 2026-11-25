@@ -1,9 +1,72 @@
 [
+ 
   {
-    "badge": "חדש",
-    "title": "קטלוג חכם לעסק שלך",
-    "text": "ניהול מוצרים והנחות בלחיצת כפתור מבית TgSofts",
-    "link": "https://wa.me",
-    "cta": "לפרטים נוספים"
+    "badge": "חינם",
+    "title": "TgSofts – אפליקציות לימוד",
+    "text": "לומדים דרך משחק – בעברית, בחינם, בכל טלפון!",
+    "link": "https://tgsofts.github.io",
+    "cta": "0525914007"
+  },
+  {
+    "badge": "פרסום",
+    "title": "כאן יכולה להיות הפרסומת שלכם",
+    "text": "מאות בעלי עסקים ולקוחות נכנסים לכאן כל שבוע 🚀",
+    "link": "tziongvili@gmail.com",
+    "cta": "0525914007"
+  },
+  {
+    "badge": "לימודים",
+    "title": "שיעורים פרטיים במתמטיקה",
+    "text": "מכינים ל-5 יחידות בגישה אישית וסבלנית",
+    "cta": "0525914007"
+  },
+  {
+    "badge": "אירועים",
+    "title": "קולולו – מוזמנים והושבה",
+    "text": "כל המוזמנים, אישורי ההגעה וההושבה לחתונה בטלפון אחד",
+    "link": "https://tzion-gvili.github.io/Kululu",
+    "cta": "לכניסה לאפליקציה"
+  },
+  {
+    "badge": "כלי AI",
+    "title": "מנקה הטקסטים (AI Text Cleaner)",
+    "text": "הסרת כוכביות, מקפים ותווים נסתרים מטקסטים של ChatGPT בקליק",
+    "link": "https://tgsofts.github.io/ai-text-cleaner",
+    "cta": "נסו בחינם"
+  },
+  {
+    "badge": "שימושי",
+    "title": "מחולל קודי QR חינמי",
+    "text": "יצירת ברקוד QR קבוע שלא פג תוקף לעולם – להורדה באיכות גבוהה",
+    "link": "https://tgsofts.github.io/qr-generator",
+    "cta": "ליצירת קוד QR"
+  },
+  {
+    "badge": "למפתחים",
+    "title": "עיצוב והמרת JSON ו-CSV",
+    "text": "סידור קוד JSON, בדיקת שגיאות והמרה לאקסל ישירות בדפדפן",
+    "link": "https://tgsofts.github.io/json-formatter",
+    "cta": "לפתיחת הכלי"
+  },
+  {
+    "badge": "אבטחה",
+    "title": "מייצר הסיסמאות החזקות",
+    "text": "יצירת סיסמאות מאובטחות מקומית בדפדפן ללא שמירה בשרת",
+    "link": "https://tgsofts.github.io/password-generator",
+    "cta": "צור סיסמה"
+  },
+  {
+    "badge": "כלי טקסט",
+    "title": "משווה הטקסטים (Text Compare)",
+    "text": "השוואה מהירה בין שתי גרסאות של טקסט או קוד וזיהוי שינויים",
+    "link": "https://tgsofts.github.io/text-compare",
+    "cta": "להשוואת טקסטים"
+  },
+  {
+    "badge": "תמונות",
+    "title": "מנקה וטשטוש תמונות",
+    "text": "חיתוך שוליים וטשטוש פרטים רגישים בתמונות ומסמכים בשניות",
+    "link": "https://tgsofts.github.io/screenshot-blur",
+    "cta": "לעריכת תמונה"
   }
 ]
