@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>קאטפורג' – קטלוג 3 חכם</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Suez+One&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://googleapis.com">
+  <link href="https://googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Suez+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.6/dist/JsBarcode.all.min.js"></script>
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+  <script src="https://jsdelivr.net"></script>
+  <script src="https://unpkg.com"></script>
   <style>
     .scan-inline-btn {
       background: rgba(255,255,255,0.08);
@@ -28,27 +28,11 @@
       transition: .18s;
       white-space: nowrap;
     }
-    .scan-inline-btn:hover {
-      background: rgba(255,255,255,0.16);
-      transform: translateY(-1px);
-    }
-    .search-scan-wrap {
-      display: flex;
-      gap: 6px;
-      flex: 1 1 240px;
-    }
-    .search-scan-wrap input {
-      flex: 1;
-      min-width: 0;
-    }
-    .sku-input-wrap {
-      display: flex;
-      gap: 6px;
-    }
-    .sku-input-wrap input {
-      flex: 1;
-      min-width: 0;
-    }
+    .scan-inline-btn:hover { background: rgba(255,255,255,0.16); transform: translateY(-1px); }
+    .search-scan-wrap { display: flex; gap: 6px; flex: 1 1 240px; }
+    .search-scan-wrap input { flex: 1; min-width: 0; }
+    .sku-input-wrap { display: flex; gap: 6px; }
+    .sku-input-wrap input { flex: 1; min-width: 0; }
     .barcode-chip-btn {
       background: rgba(56, 189, 248, 0.14);
       border: 1px solid rgba(56, 189, 248, 0.35);
@@ -61,27 +45,10 @@
       font-family: inherit;
       margin-right: 6px;
     }
-    .barcode-chip-btn:hover {
-      background: rgba(56, 189, 248, 0.25);
-    }
-    #scannerReader {
-      width: 100%;
-      border-radius: 14px;
-      overflow: hidden;
-      background: #000;
-      margin: 12px 0;
-    }
-    .barcode-preview-box {
-      background: #ffffff;
-      padding: 18px 14px;
-      border-radius: 14px;
-      text-align: center;
-      margin: 14px 0;
-    }
-    .barcode-preview-box svg {
-      max-width: 100%;
-      height: auto;
-    }
+    .barcode-chip-btn:hover { background: rgba(56, 189, 248, 0.25); }
+    #scannerReader { width: 100%; border-radius: 14px; overflow: hidden; background: #000; margin: 12px 0; }
+    .barcode-preview-box { background: #ffffff; padding: 18px 14px; border-radius: 14px; text-align: center; margin: 14px 0; }
+    .barcode-preview-box svg { max-width: 100%; height: auto; }
   </style>
 </head>
 <body>
@@ -99,7 +66,6 @@
       <button id="logoutBtn" class="icon-btn hidden" title="יציאה מקטלוג">🚪</button>
     </div>
   </header>
-
   <main>
     <section id="loginView" class="login">
       <div class="hero-icon">📦</div>
@@ -115,7 +81,7 @@
 
         <div style="margin-top: 12px; padding-top: 14px; border-top: 1px dashed var(--line);">
           <p class="muted" style="font-size: 14px; margin: 0 0 10px;">אין לכם קוד גישה? רוצים קטלוג חכם לעסק שלכם?</p>
-          <a href="https://wa.me/972525914007?text=%D7%94%D7%99%D7%99%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A7%D7%91%D7%9C%20%D7%A7%D7%95%D7%93%20%D7%92%D7%99%D7%A9%D7%94%20%D7%9C%D7%A7%D7%90%D7%98%D7%A4%D7%95%D7%A8%D7%92%27" target="_blank" rel="noopener" class="btn wa-btn small" style="width: 100%;">
+          <a href="https://wa.me" target="_blank" rel="noopener" class="btn wa-btn small" style="width: 100%;">
             💬 דברו איתי לקבלת קוד (052-5914007)
           </a>
         </div>
@@ -134,26 +100,10 @@
       </div>
 
       <div class="stats admin-only">
-        <div class="stat" style="--c: var(--todo)">
-          <span>📦</span>
-          <b id="statTotal">0</b>
-          <small>מוצרים בקטלוג</small>
-        </div>
-        <div class="stat" style="--c: var(--good)">
-          <span>✅</span>
-          <b id="statInStock">0</b>
-          <small>זמינים במלאי</small>
-        </div>
-        <div class="stat" style="--c: var(--pink)">
-          <span>🏷️</span>
-          <b id="statFamilies">0</b>
-          <small>משפחות מוצרים</small>
-        </div>
-        <div class="stat" style="--c: var(--gold)">
-          <span>🔥</span>
-          <b id="statOnSale">0</b>
-          <small>מוצרים במבצע</small>
-        </div>
+        <div class="stat" style="--c: var(--todo)"><span>📦</span><b id="statTotal">0</b><small>מוצרים בקטלוג</small></div>
+        <div class="stat" style="--c: var(--good)"><span>✅</span><b id="statInStock">0</b><small>זמינים במלאי</small></div>
+        <div class="stat" style="--c: var(--pink)"><span>🏷️</span><b id="statFamilies">0</b><small>משפחות מוצרים</small></div>
+        <div class="stat" style="--c: var(--gold)"><span>🔥</span><b id="statOnSale">0</b><small>מוצרים במבצע</small></div>
       </div>
 
       <div class="toolbar">
@@ -161,9 +111,7 @@
           <input id="searchInput" type="search" placeholder="🔍 חיפוש מוצר, מק״ט / ברקוד..." />
           <button type="button" id="scanSearchBtn" class="scan-inline-btn" title="סרוק ברקוד לחיפוש">📷 סרוק</button>
         </div>
-        <select id="filterFamily">
-          <option value="all">🏷️ כל המשפחות</option>
-        </select>
+        <select id="filterFamily"><option value="all">🏷️ כל המשפחות</option></select>
         <select id="filterStock" class="admin-only">
           <option value="all">כל המלאי</option>
           <option value="in">✅ במלאי בלבד</option>
@@ -187,44 +135,24 @@
     <div class="ad-progress"><i id="adBar"></i></div>
     <div id="adDots" class="ad-dots"></div>
   </section>
-
   <div id="productModal" class="modal hidden">
     <div class="modal-card">
       <h2 id="modalTitle" style="margin-top:0">מוצר חדש</h2>
       <form id="productForm" class="form">
         <input type="hidden" id="prodId" />
-        <label>
-          משפחת מוצרים (קובעת הנחה גורפת)
-          <select id="prodFamily"></select>
-        </label>
-        <label>
-          שם המוצר *
-          <input id="prodName" type="text" required placeholder="למשל: אוזניות אלחוטיות Pro" />
-        </label>
+        <label>משפחת מוצרים (קובעת הנחה גורפת)<select id="prodFamily"></select></label>
+        <label>שם המוצר *<input id="prodName" type="text" required placeholder="למשל: אוזניות אלחוטיות Pro" /></label>
         <div class="form-row-2">
-          <label>
-            מחיר בסיס (₪) *
-            <input id="prodPrice" type="number" min="0" step="0.1" required placeholder="0" />
-          </label>
-          <label>
-            מק״ט / ברקוד (אופציונלי)
+          <label>מחיר בסיס (₪) *<input id="prodPrice" type="number" min="0" step="0.1" required placeholder="0" /></label>
+          <label>מק״ט / ברקוד (אופציונלי)
             <div class="sku-input-wrap">
               <input id="prodSku" type="text" placeholder="סרוק או הקלד..." />
               <button type="button" id="scanSkuBtn" class="scan-inline-btn" title="סרוק ברקוד במצלמה">📷</button>
             </div>
           </label>
         </div>
-        <label>
-          זמינות במלאי
-          <select id="prodStock">
-            <option value="true">✅ זמין במלאי</option>
-            <option value="false">❌ אזל מהמלאי</option>
-          </select>
-        </label>
-        <label>
-          תיאור קצר
-          <textarea id="prodDesc" rows="2" placeholder="מפרט, מידות, צבעים..."></textarea>
-        </label>
+        <label>זמינות במלאי<select id="prodStock"><option value="true">✅ זמין במלאי</option><option value="false">❌ אזל מהמלאי</option></select></label>
+        <label>תיאור קצר<textarea id="prodDesc" rows="2" placeholder="מפרט, מידות, צבעים..."></textarea></label>
         <div class="modal-actions">
           <button type="button" id="closeProdModalBtn" class="btn secondary">ביטול</button>
           <button type="submit" class="btn">שמירה 💾</button>
@@ -237,7 +165,6 @@
     <div class="modal-card">
       <h2 style="margin-top:0">🏷️ ניהול משפחות והנחות</h2>
       <p class="muted" style="font-size: 13.5px; margin-top: -6px;">שינוי אחוז הנחה למשפחה יעדכן מיד את כל המוצרים המשויכים אליה.</p>
-      
       <form id="addFamilyForm" class="form" style="margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--line);">
         <div class="form-row-2">
           <input id="newFamName" type="text" placeholder="שם משפחה חדשה..." required />
@@ -245,12 +172,8 @@
         </div>
         <button type="submit" class="btn small">+ צור משפחה חדשה</button>
       </form>
-
       <div id="familiesList" class="form" style="max-height: 260px; overflow-y: auto;"></div>
-
-      <div class="modal-actions">
-        <button type="button" id="closeFamModalBtn" class="btn">סיום ושמירה ✅</button>
-      </div>
+      <div class="modal-actions"><button type="button" id="closeFamModalBtn" class="btn">סיום ושמירה ✅</button></div>
     </div>
   </div>
 
@@ -259,30 +182,23 @@
       <h2 style="margin-top:0">📷 סריקת ברקוד</h2>
       <p class="muted" style="font-size: 13.5px; margin-top: -6px;">כוונו את המצלמה אל הברקוד שעל גבי המוצר</p>
       <div id="scannerReader"></div>
-      <div class="modal-actions">
-        <button type="button" id="closeScannerBtn" class="btn secondary">סגור מצלמה</button>
-      </div>
+      <div class="modal-actions"><button type="button" id="closeScannerBtn" class="btn secondary">סגור מצלמה</button></div>
     </div>
   </div>
-
   <div id="barcodeViewModal" class="modal hidden">
     <div class="modal-card" style="text-align:center;">
       <h2 id="barcodeProdTitle" style="margin-top:0">ברקוד מוצר</h2>
-      <div class="barcode-preview-box">
-        <svg id="barcodeSvg"></svg>
-      </div>
-      <div class="modal-actions" style="justify-content: center;">
-        <button type="button" id="closeBarcodeViewBtn" class="btn">סגור ✅</button>
-      </div>
+      <div class="barcode-preview-box"><svg id="barcodeSvg"></svg></div>
+      <div class="modal-actions" style="justify-content: center;"><button type="button" id="closeBarcodeViewBtn" class="btn">סגור ✅</button></div>
     </div>
   </div>
 
   <div id="approvalModal" class="modal hidden">
     <div class="modal-card" style="text-align:center;">
-      <div style="font-size:54px; margin-bottom:6px;">🔐</div>
+      <div style="font-size:54px; margin-bottom:6px">🔐</div>
       <h2 style="margin-top:0">פתיחת קטלוג חדש</h2>
-      <p>הקוד שהזנתם עדיין לא מאושר במערכת. שלחו לי הודעה קצרה ואפתח לכם קטלוג לעסק תוך רגע!</p>
-      <p class="muted" style="font-size:14px;">הקוד שבחרתם: <b id="appCodeLabel" class="ltr"></b></p>
+      <p>כדי לפתוח קטלוג חדש באפליקציה, שלחו לי הודעה קצרה ואאשר לכם את הקוד תוך רגע!</p>
+      <p class="muted" style="font-size:14px">הקוד שבחרתם: <b id="appCodeLabel" class="ltr"></b></p>
       <div class="modal-actions" style="justify-content:center; flex-wrap:wrap;">
         <a id="appWaLink" class="btn wa-btn" href="#" target="_blank" rel="noopener">💬 שליחה בוואטסאפ</a>
         <a class="btn secondary" href="tel:0525914007">📞 חיוג</a>
@@ -300,8 +216,8 @@
 
   <script src="config.js"></script>
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { initializeApp } from "https://gstatic.com";
+    import { getFirestore, doc, onSnapshot, setDoc } from "https://gstatic.com";
 
     let soundOn = localStorage.getItem('cataforge_sound') !== 'off';
     const soundBtn = document.getElementById('soundToggleBtn');
@@ -330,12 +246,11 @@
     }
 
     const sfx = {
-      pop: () => playTone([520], 'sine', 0.08, 0),
+      pop: () => playTone(, 'sine', 0.08, 0),
       success: () => playTone([523.25, 659.25, 783.99], 'triangle', 0.16, 0.07),
-      delete: () => playTone([320, 220], 'sawtooth', 0.12, 0.06),
-      error: () => playTone([220, 180], 'sawtooth', 0.16, 0.09)
+      delete: () => playTone(, 'sawtooth', 0.12, 0.06),
+      error: () => playTone(, 'sawtooth', 0.16, 0.09)
     };
-
     soundBtn.onclick = () => {
       soundOn = !soundOn;
       localStorage.setItem('cataforge_sound', soundOn ? 'on' : 'off');
@@ -353,9 +268,7 @@
     }
 
     function escapeHtml(str) {
-      return String(str ?? '').replace(/[&<>"']/g, m => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-      }[m]));
+      return String(str ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
     }
 
     async function hashAccessCode(code) {
@@ -367,25 +280,17 @@
     const cloudChip = document.getElementById('cloudStatus');
     try {
       if (window.CLOUD && window.CLOUD.apiKey && window.CLOUD.projectId) {
-        const app = initializeApp({
-          apiKey: window.CLOUD.apiKey,
-          projectId: window.CLOUD.projectId
-        });
+        const app = initializeApp({ apiKey: window.CLOUD.apiKey, projectId: window.CLOUD.projectId });
         db = getFirestore(app);
       }
-    } catch (err) {
-      console.error('Firebase init error:', err);
-    }
+    } catch (err) { console.error('Firebase init error:', err); }
 
     let approvedClients = {};
     let currentStore = null;
     let isReadOnly = false;
     let unsubscribeStore = null;
 
-    let storeData = {
-      families: [{ id: 'general', name: 'כללי', discount: 0 }],
-      products: []
-    };
+    let storeData = { families: [{ id: 'general', name: 'כללי', discount: 0 }], products: [] };
 
     const defaultDemoData = {
       families: [
@@ -393,26 +298,8 @@
         { id: 'fam_2', name: 'אביזרים', discount: 0 }
       ],
       products: [
-        {
-          id: 'prod_demo_1',
-          familyId: 'fam_1',
-          name: 'אוזניות אלחוטיות Pro',
-          price: 290,
-          sku: '7290012345678',
-          inStock: true,
-          desc: 'ביטול רעשים אקטיבי וטעינה מהירה',
-          createdAt: Date.now()
-        },
-        {
-          id: 'prod_demo_2',
-          familyId: 'fam_2',
-          name: 'מעמד שולחני מתכוונן',
-          price: 85,
-          sku: 'ACC-1402',
-          inStock: true,
-          desc: 'מתאים לכל סוגי הסמארטפונים והטאבלטים',
-          createdAt: Date.now() - 1000
-        }
+        { id: 'prod_demo_1', familyId: 'fam_1', name: 'אוזניות אלחוטיות Pro', price: 290, sku: '7290012345678', inStock: true, desc: 'ביטול רעשים אקטיבי וטעינה מהירה', createdAt: Date.now() },
+        { id: 'prod_demo_2', familyId: 'fam_2', name: 'מעמד שולחני מתכוונן', price: 85, sku: 'ACC-1402', inStock: true, desc: 'מתאים לכל סוגי הסמארטפונים והטאבלטים', createdAt: Date.now() - 1000 }
       ]
     };
 
@@ -421,35 +308,30 @@
         const res = await fetch('approved.json?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) approvedClients = await res.json();
       } catch (e) {}
-      const demoHash = await hashAccessCode('DEMO-100');
-      if (!approvedClients['DEMO-100'] && !approvedClients[demoHash]) {
-        approvedClients[demoHash] = {
-          storeId: 'demo_store',
-          storeName: 'חנות הדגמה - קאטפורג׳',
-          whatsapp: '972525914007',
-          active: true
-        };
+      if (!approvedClients['DEMO-100']) {
+        approvedClients['DEMO-100'] = { storeId: 'demo_store', storeName: 'חנות הדגמה - קאטפורג׳', whatsapp: '972525914007', active: true };
       }
     }
 
-    async function resolveClientInfo(code) {
-      if (approvedClients[code]) return approvedClients[code];
+    async function resolveClientInfo(rawCode) {
+      const code = String(rawCode || '').trim().toUpperCase();
+      if (!code) return null;
+      if (approvedClients[code] && approvedClients[code].active !== false) return { ...approvedClients[code], code };
       const hashed = await hashAccessCode(code);
-      return approvedClients[hashed] || null;
+      if (approvedClients[hashed] && approvedClients[hashed].active !== false) return { ...approvedClients[hashed], code };
+      return null;
     }
 
-    async function showApprovalModal(code) {
-      const key = await hashAccessCode(code);
-      const msg = `היי! אשמח לפתוח קטלוג חדש בקאטפורג' 📦\nקוד אישור: ${key}`;
-      document.getElementById('appCodeLabel').textContent = code;
-      document.getElementById('appWaLink').href = `https://wa.me/972525914007?text=${encodeURIComponent(msg)}`;
-      document.getElementById('appMailLink').href = `mailto:tziongvili@gmail.com?subject=${encodeURIComponent('אישור פתיחת קטלוג בקאטפורג')}&body=${encodeURIComponent(msg)}`;
+    async function showApprovalModal(rawCode) {
+      const hashed = await hashAccessCode(rawCode);
+      const msg = `היי! אשמח לפתוח קטלוג חדש בקאטפורג' 📦\nקוד אישור: ${hashed}`;
+      document.getElementById('appCodeLabel').textContent = rawCode;
+      document.getElementById('appWaLink').href = `https://wa.me{encodeURIComponent(msg)}`;
+      document.getElementById('appMailLink').href = `mailto:tziongvili@://gmail.com{encodeURIComponent('אישור פתיחת קטלוג בקאטפורג׳')}&body=${encodeURIComponent(msg)}`;
       document.getElementById('approvalModal').classList.remove('hidden');
     }
 
-    document.getElementById('closeApprovalBtn').onclick = () => {
-      document.getElementById('approvalModal').classList.add('hidden');
-    };
+    document.getElementById('closeApprovalBtn').onclick = () => document.getElementById('approvalModal').classList.add('hidden');
 
     async function initAds() {
       try {
@@ -480,23 +362,17 @@
           `;
           dots.innerHTML = ads.map((_, dIdx) => `<button type="button" class="${dIdx === i ? 'active' : ''}" data-idx="${dIdx}"></button>`).join('');
           dots.querySelectorAll('button').forEach(b => {
-            b.onclick = () => {
-              idx = Number(b.dataset.idx);
-              renderAd(idx);
-              restartBar();
-            };
+            b.onclick = () => { idx = Number(b.dataset.idx); renderAd(idx); restartBar(); };
           });
         }
 
         function restartBar() {
           bar.style.transition = 'none';
           bar.style.width = '0%';
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-              bar.style.transition = `width ${intervalMs}ms linear`;
-              bar.style.width = '100%';
-            });
-          });
+          requestAnimationFrame(() => requestAnimationFrame(() => {
+            bar.style.transition = `width ${intervalMs}ms linear`;
+            bar.style.width = '100%';
+          }));
         }
 
         renderAd(0);
@@ -509,12 +385,9 @@
         }, intervalMs);
       } catch (e) {}
     }
-
     function findStoreById(storeId) {
       for (const [code, info] of Object.entries(approvedClients)) {
-        if (info.storeId === storeId && info.active !== false) {
-          return { ...info, code };
-        }
+        if (info.storeId === storeId && info.active !== false) return { ...info, code };
       }
       return null;
     }
@@ -529,19 +402,14 @@
       document.getElementById('logoutBtn').classList.remove('hidden');
       document.getElementById('activeStoreName').textContent = storeInfo.storeName;
 
-      if (!readOnlyMode) {
-        document.getElementById('copyClientLinkBtn').classList.remove('hidden');
-      }
-
-      document.querySelectorAll('.admin-only').forEach(el => {
-        el.classList.toggle('hidden', readOnlyMode);
-      });
+      if (!readOnlyMode) document.getElementById('copyClientLinkBtn').classList.remove('hidden');
+      document.querySelectorAll('.admin-only').forEach(el => el.classList.toggle('hidden', readOnlyMode));
 
       const localKey = `cataforge_data_${storeInfo.storeId}`;
       const cached = localStorage.getItem(localKey);
       if (cached) {
         try { storeData = JSON.parse(cached); } catch (e) {}
-      } else if (storeInfo.storeId === 'demo_store' || storeInfo.storeId === 'cataforge_demo') {
+      } else if (storeInfo.storeId === 'demo_store') {
         storeData = JSON.parse(JSON.stringify(defaultDemoData));
       }
 
@@ -566,8 +434,7 @@
           }
           cloudChip.className = 'cloud-chip ok';
           cloudChip.textContent = readOnlyMode ? '👀 תצוגת לקוח' : '☁️ מסונכרן לענן';
-        }, (err) => {
-          console.error('Firestore listen error:', err);
+        }, () => {
           cloudChip.className = 'cloud-chip local';
           cloudChip.textContent = '⚠️ מצב מקומי';
         });
@@ -595,7 +462,6 @@
           cloudChip.className = 'cloud-chip ok';
           cloudChip.textContent = '☁️ מסונכרן לענן';
         } catch (err) {
-          console.error('Save error:', err);
           cloudChip.className = 'cloud-chip local';
           cloudChip.textContent = '⚠️ שגיאת ענן';
           showToast('שגיאה בשמירה לענן', 'bad');
@@ -606,17 +472,11 @@
     function getEnrichedProducts() {
       const famMap = new Map(storeData.families.map(f => [f.id, f]));
       return storeData.products.map(p => {
-        const fam = famMap.get(p.familyId) || storeData.families[0] || { id: 'general', name: 'כללי', discount: 0 };
+        const fam = famMap.get(p.familyId) || storeData.families || { id: 'general', name: 'כללי', discount: 0 };
         const basePrice = Number(p.price) || 0;
         const discount = Math.min(100, Math.max(0, Number(fam.discount) || 0));
         const finalPrice = Math.round(basePrice * (1 - discount / 100) * 100) / 100;
-        return {
-          ...p,
-          familyName: fam.name,
-          basePrice,
-          discount,
-          finalPrice
-        };
+        return { ...p, familyName: fam.name, basePrice, discount, finalPrice };
       });
     }
 
@@ -630,10 +490,7 @@
         if (famFilter !== 'all' && p.familyId !== famFilter) return false;
         if (stockFilter === 'in' && !p.inStock) return false;
         if (stockFilter === 'out' && p.inStock) return false;
-        if (q) {
-          const hay = `${p.name} ${p.sku || ''} ${p.desc || ''} ${p.familyName}`.toLowerCase();
-          if (!hay.includes(q)) return false;
-        }
+        if (q && !`${p.name} ${p.sku || ''} ${p.desc || ''} ${p.familyName}`.toLowerCase().includes(q)) return false;
         return true;
       });
 
@@ -643,7 +500,6 @@
         if (sortBy === 'name') return a.name.localeCompare(b.name, 'he');
         return (b.createdAt || 0) - (a.createdAt || 0);
       });
-
       return list;
     }
 
@@ -658,25 +514,20 @@
       const currentFamVal = filterFamEl.value;
       filterFamEl.innerHTML = `<option value="all">🏷️ כל המשפחות</option>` +
         storeData.families.map(f => `<option value="${escapeHtml(f.id)}">${escapeHtml(f.name)} ${f.discount > 0 ? `(-${f.discount}%)` : ''}</option>`).join('');
-      if ([...filterFamEl.options].some(o => o.value === currentFamVal)) {
-        filterFamEl.value = currentFamVal;
-      }
+      if ([...filterFamEl.options].some(o => o.value === currentFamVal)) filterFamEl.value = currentFamVal;
 
       const visible = getFilteredProducts();
       const grid = document.getElementById('productGrid');
-
       if (!visible.length) {
         grid.innerHTML = `<div class="empty">לא נמצאו מוצרים תואמים לחיפוש 🔍</div>`;
         return;
       }
 
       grid.innerHTML = visible.map(p => {
-        const rawPhone = String(currentStore.whatsapp || currentStore.phone || '').replace(/\D/g, '');
+        const rawPhone = (currentStore.whatsapp || currentStore.phone || '').replace(/\D/g, '');
         const waPhone = rawPhone.startsWith('0') ? '972' + rawPhone.slice(1) : rawPhone;
-        const waMsg = encodeURIComponent(`היי ${currentStore.storeName}, אשמח להזמין:
-*${p.name}*${p.sku ? ` (מק"ט: ${p.sku})` : ''}
-מחיר: ${p.finalPrice.toLocaleString()} ₪`);
-        const waHref = waPhone ? `https://wa.me/${waPhone}?text=${waMsg}` : `https://wa.me/?text=${waMsg}`;
+        const waMsg = encodeURIComponent(`היי ${currentStore.storeName}, אשמח להזמין:\n*${p.name}*${p.sku ? ` (מק"ט: ${p.sku})` : ''}\nמחיר: ${p.finalPrice.toLocaleString()} ₪`);
+        const waHref = waPhone ? `https://wa.me{waPhone}?text=${waMsg}` : `https://wa.me{waMsg}`;
 
         return `
           <article class="task ${p.inStock ? '' : 'out-of-stock'}">
@@ -687,53 +538,35 @@
                 ${!isReadOnly ? (p.inStock ? `<span class="badge stock-in">✅ במלאי</span>` : `<span class="badge stock-out">❌ אזל</span>`) : ''}
               </div>
             </div>
-
             <h3>${escapeHtml(p.name)}</h3>
             ${p.desc ? `<p class="desc">${escapeHtml(p.desc)}</p>` : ''}
-
             <div class="price-box">
               <span class="final-price">${p.finalPrice.toLocaleString()} ₪</span>
               ${p.discount > 0 ? `<span class="old-price">${p.basePrice.toLocaleString()} ₪</span>` : ''}
             </div>
-
             <div class="task-foot">
-              <div>
-                ${p.sku ? `<span>מק״ט: ${escapeHtml(p.sku)}</span><button type="button" class="barcode-chip-btn show-bc-btn" data-sku="${escapeHtml(p.sku)}" data-name="${escapeHtml(p.name)}">📊 ברקוד</button>` : ''}
-              </div>
+              <div>${p.sku ? `<span>מק״ט: ${escapeHtml(p.sku)}</span><button type="button" class="barcode-chip-btn show-bc-btn" data-sku="${escapeHtml(p.sku)}" data-name="${escapeHtml(p.name)}">📊 ברקוד</button>` : ''}</div>
               <div class="card-btns">
-                ${isReadOnly ? `
-                  <a href="${waHref}" target="_blank" rel="noopener" class="order-wa-btn">💬 הזמנה בוואטסאפ</a>
-                ` : `
-                  <button type="button" class="edit-btn" data-id="${escapeHtml(p.id)}">✏️ עריכה</button>
-                  <button type="button" class="del-btn" data-id="${escapeHtml(p.id)}">🗑️</button>
-                `}
+                ${isReadOnly ? `<a href="${waHref}" target="_blank" rel="noopener" class="order-wa-btn">💬 הזמנה בוואטסאפ</a>` :
+                  `<button type="button" class="edit-btn" data-id="${escapeHtml(p.id)}">✏️ עריכה</button><button type="button" class="del-btn" data-id="${escapeHtml(p.id)}">🗑️</button>`}
               </div>
             </div>
           </article>
         `;
       }).join('');
 
-      grid.querySelectorAll('.show-bc-btn').forEach(btn => {
-        btn.onclick = () => openBarcodePreview(btn.dataset.sku, btn.dataset.name);
-      });
-
+      grid.querySelectorAll('.show-bc-btn').forEach(btn => { btn.onclick = () => openBarcodePreview(btn.dataset.sku, btn.dataset.name); });
       if (!isReadOnly) {
-        grid.querySelectorAll('.edit-btn').forEach(btn => {
-          btn.onclick = () => openProductModal(btn.dataset.id);
-        });
+        grid.querySelectorAll('.edit-btn').forEach(btn => { btn.onclick = () => openProductModal(btn.dataset.id); });
         grid.querySelectorAll('.del-btn').forEach(btn => {
           btn.onclick = () => {
             if (!confirm('למחוק את המוצר מהקטלוג?')) return;
             storeData.products = storeData.products.filter(x => x.id !== btn.dataset.id);
-            sfx.delete();
-            saveStoreData();
-            renderAll();
-            showToast('המוצר נמחק', '');
+            sfx.delete(); saveStoreData(); renderAll(); showToast('המוצר נמחק', '');
           };
         });
       }
     }
-
     const barcodeViewModal = document.getElementById('barcodeViewModal');
     function openBarcodePreview(sku, prodName) {
       if (!sku) return;
@@ -741,89 +574,44 @@
       document.getElementById('barcodeProdTitle').textContent = prodName;
       barcodeViewModal.classList.remove('hidden');
       try {
-        if (window.JsBarcode) {
-          JsBarcode('#barcodeSvg', sku, {
-            format: 'CODE128',
-            lineColor: '#0f172a',
-            width: 2.2,
-            height: 75,
-            displayValue: true,
-            fontSize: 16
-          });
-        }
-      } catch (e) {
-        showToast('לא ניתן ליצור ברקוד מתווים אלו', 'bad');
-      }
+        if (window.JsBarcode) JsBarcode('#barcodeSvg', sku, { format: 'CODE128', lineColor: '#0f172a', width: 2.2, height: 75, displayValue: true, fontSize: 16 });
+      } catch (e) { showToast('לא ניתן ליצור ברקוד מתווים אלו', 'bad'); }
     }
     document.getElementById('closeBarcodeViewBtn').onclick = () => barcodeViewModal.classList.add('hidden');
 
     const scannerModal = document.getElementById('scannerModal');
-    let html5QrScanner = null;
-    let scannerTargetInput = null;
-
+    let html5QrScanner = null, scannerTargetInput = null;
     async function stopScanner() {
-      if (html5QrScanner) {
-        try {
-          await html5QrScanner.stop();
-          html5QrScanner.clear();
-        } catch (e) {}
-        html5QrScanner = null;
-      }
+      if (html5QrScanner) { try { await html5QrScanner.stop(); html5QrScanner.clear(); } catch (e) {} html5QrScanner = null; }
       scannerModal.classList.add('hidden');
     }
-
     async function startScanner(targetInputId) {
       scannerTargetInput = document.getElementById(targetInputId);
-      if (!window.Html5Qrcode) {
-        showToast('רכיב המצלמה עדיין נטען, נסה שוב בעוד רגע', 'bad');
-        return;
-      }
+      if (!window.Html5Qrcode) { showToast('רכיב המצלמה עדיין נטען, נסה שוב בעוד רגע', 'bad'); return; }
       sfx.pop();
       scannerModal.classList.remove('hidden');
       try {
         html5QrScanner = new Html5Qrcode('scannerReader');
-        await html5QrScanner.start(
-          { facingMode: 'environment' },
-          { fps: 10, qrbox: { width: 250, height: 140 } },
+        await html5QrScanner.start({ facingMode: 'environment' }, { fps: 10, qrbox: { width: 250, height: 140 } },
           async (decodedText) => {
             sfx.success();
-            if (scannerTargetInput) {
-              scannerTargetInput.value = decodedText;
-              scannerTargetInput.dispatchEvent(new Event('input'));
-            }
-            showToast(`נסרק ברקוד: ${decodedText} ✅`);
+            if (scannerTargetInput) { scannerTargetInput.value = decodedText; scannerTargetInput.dispatchEvent(new Event('input')); }
+            showToast('נסרק ברקוד: ' + decodedText);
             await stopScanner();
-          },
-          () => {}
+          }, () => {}
         );
-      } catch (err) {
-        console.error('Camera error:', err);
-        showToast('לא ניתן לגשת למצלמה (בדוק הרשאות בדפדפן)', 'bad');
-        await stopScanner();
-      }
+      } catch (err) { showToast('לא ניתן לגשת למצלמה (בדוק הרשאות בדפדפן)', 'bad'); await stopScanner(); }
     }
-
     document.getElementById('scanSearchBtn').onclick = () => startScanner('searchInput');
     document.getElementById('scanSkuBtn').onclick = () => startScanner('prodSku');
     document.getElementById('closeScannerBtn').onclick = stopScanner;
-
-    document.getElementById('prodSku').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        sfx.pop();
-        document.getElementById('prodDesc').focus();
-      }
-    });
-
+    document.getElementById('prodSku').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sfx.pop(); document.getElementById('prodDesc').focus(); } });
     const prodModal = document.getElementById('productModal');
     function openProductModal(prodId = null) {
       if (isReadOnly) return;
       sfx.pop();
       const famSelect = document.getElementById('prodFamily');
-      famSelect.innerHTML = storeData.families.map(f =>
-        `<option value="${escapeHtml(f.id)}">${escapeHtml(f.name)} (${f.discount}% הנחה)</option>`
-      ).join('');
-
+      famSelect.innerHTML = storeData.families.map(f => `<option value="${escapeHtml(f.id)}">${escapeHtml(f.name)} (${f.discount}% הנחה)</option>`).join('');
       if (prodId) {
         const p = storeData.products.find(x => x.id === prodId);
         if (!p) return;
@@ -843,10 +631,8 @@
       }
       prodModal.classList.remove('hidden');
     }
-
     document.getElementById('openAddModalBtn').onclick = () => openProductModal(null);
     document.getElementById('closeProdModalBtn').onclick = () => prodModal.classList.add('hidden');
-
     document.getElementById('productForm').onsubmit = (e) => {
       e.preventDefault();
       const id = document.getElementById('prodId').value;
@@ -860,19 +646,11 @@
         desc: document.getElementById('prodDesc').value.trim(),
         createdAt: id ? (storeData.products.find(x => x.id === id)?.createdAt || Date.now()) : Date.now()
       };
-
-      if (id) {
-        const idx = storeData.products.findIndex(x => x.id === id);
-        if (idx >= 0) storeData.products[idx] = item;
-      } else {
-        storeData.products.unshift(item);
-      }
-
+      if (id) { const idx = storeData.products.findIndex(x => x.id === id); if (idx >= 0) storeData.products[idx] = item; }
+      else storeData.products.unshift(item);
       prodModal.classList.add('hidden');
-      sfx.success();
-      saveStoreData();
-      renderAll();
-      showToast(id ? 'המוצר עודכן בהצלחה ✅' : 'המוצר נוסף לקטלוג ✨');
+      sfx.success(); saveStoreData(); renderAll();
+      showToast(id ? 'המוצר עודכן בהצלחה' : 'המוצר נוסף לקטלוג');
     };
 
     const famModal = document.getElementById('familiesModal');
@@ -880,47 +658,27 @@
       const listEl = document.getElementById('familiesList');
       listEl.innerHTML = storeData.families.map((f, idx) => `
         <div class="family-row">
-          <div>
-            <b>${escapeHtml(f.name)}</b>
-            <small>${storeData.products.filter(p => p.familyId === f.id).length} מוצרים</small>
-          </div>
+          <div><b>${escapeHtml(f.name)}</b><small>${storeData.products.filter(p => p.familyId === f.id).length} מוצרים</small></div>
           <div style="display:flex; align-items:center; gap:6px;">
-            <input type="number" min="0" max="100" value="${f.discount}" data-idx="${idx}" class="fam-disc-input" />
-            <span>%</span>
+            <input type="number" min="0" max="100" value="${f.discount}" data-idx="${idx}" class="fam-disc-input" /><span>%</span>
             ${storeData.families.length > 1 ? `<button type="button" class="del-btn fam-del-btn" data-id="${escapeHtml(f.id)}">🗑️</button>` : ''}
           </div>
         </div>
       `).join('');
-
       listEl.querySelectorAll('.fam-disc-input').forEach(inp => {
-        inp.onchange = () => {
-          const i = Number(inp.dataset.idx);
-          storeData.families[i].discount = Math.min(100, Math.max(0, Number(inp.value) || 0));
-          renderAll();
-        };
+        inp.onchange = () => { storeData.families[Number(inp.dataset.idx)].discount = Math.min(100, Math.max(0, Number(inp.value) || 0)); renderAll(); };
       });
-
       listEl.querySelectorAll('.fam-del-btn').forEach(btn => {
         btn.onclick = () => {
           const delId = btn.dataset.id;
           const fallbackId = storeData.families.find(x => x.id !== delId).id;
-          storeData.products.forEach(p => {
-            if (p.familyId === delId) p.familyId = fallbackId;
-          });
+          storeData.products.forEach(p => { if (p.familyId === delId) p.familyId = fallbackId; });
           storeData.families = storeData.families.filter(x => x.id !== delId);
-          sfx.delete();
-          renderFamiliesList();
-          renderAll();
+          sfx.delete(); renderFamiliesList(); renderAll();
         };
       });
     }
-
-    document.getElementById('openFamiliesModalBtn').onclick = () => {
-      sfx.pop();
-      renderFamiliesList();
-      famModal.classList.remove('hidden');
-    };
-
+    document.getElementById('openFamiliesModalBtn').onclick = () => { sfx.pop(); renderFamiliesList(); famModal.classList.remove('hidden'); };
     document.getElementById('addFamilyForm').onsubmit = (e) => {
       e.preventDefault();
       const name = document.getElementById('newFamName').value.trim();
@@ -929,49 +687,33 @@
       storeData.families.push({ id: 'fam_' + Date.now(), name, discount });
       document.getElementById('newFamName').value = '';
       document.getElementById('newFamDiscount').value = '0';
-      sfx.success();
-      renderFamiliesList();
-      renderAll();
+      sfx.success(); renderFamiliesList(); renderAll();
     };
-
-    document.getElementById('closeFamModalBtn').onclick = () => {
-      famModal.classList.add('hidden');
-      saveStoreData();
-      showToast('הגדרות המשפחות נשמרו 💾');
-    };
-
+    document.getElementById('closeFamModalBtn').onclick = () => { famModal.classList.add('hidden'); saveStoreData(); showToast('הגדרות המשפחות נשמרו'); };
     ['searchInput', 'filterFamily', 'filterStock', 'sortBy'].forEach(id => {
       document.getElementById(id).addEventListener('input', renderAll);
       document.getElementById(id).addEventListener('change', renderAll);
     });
 
     document.getElementById('copyClientLinkBtn').onclick = () => {
-      const baseUrl = window.location.origin + window.location.pathname;
-      const clientUrl = `${baseUrl}?store=${encodeURIComponent(currentStore.storeId)}`;
+      const clientUrl = `${window.location.origin + window.location.pathname}?store=${encodeURIComponent(currentStore.storeId)}`;
       navigator.clipboard?.writeText(clientUrl);
       sfx.success();
-      showToast('קישור התצוגה ללקוחות הועתק ללוח 🔗');
+      showToast('קישור התצוגה ללקוחות הועתק ללוח');
     };
 
     document.getElementById('shareWaBtn').onclick = () => {
       sfx.pop();
       const visible = getFilteredProducts();
       if (!visible.length) return showToast('אין מוצרים לשיתוף', '');
-
-      const baseUrl = window.location.origin + window.location.pathname;
-      const clientUrl = `${baseUrl}?store=${encodeURIComponent(currentStore.storeId)}`;
-
-      let lines = [`📦 *קטלוג ${currentStore.storeName}*`, `------------------`];
+      const clientUrl = `${window.location.origin + window.location.pathname}?store=${encodeURIComponent(currentStore.storeId)}`;
+      let lines = [`*קטלוג ${currentStore.storeName}*`, `------------------`];
       visible.forEach(p => {
         const saleTag = p.discount > 0 ? ` *(במבצע ${p.discount}% הנחה!)*` : '';
-        lines.push(`▪️ *${p.name}* — ${p.finalPrice.toLocaleString()} ₪${saleTag}`);
+        lines.push(`- *${p.name}* — ${p.finalPrice.toLocaleString()} ₪${saleTag}`);
       });
-      lines.push(`
-🔗 לצפייה והזמנה בקטלוג המלא:
-${clientUrl}`);
-
-      window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('
-'))}`, '_blank', 'noopener');
+      lines.push(`\nלצפייה והזמנה בקטלוג המלא:\n${clientUrl}`);
+      window.open(`https://wa.me{encodeURIComponent(lines.join('\n'))}`, '_blank', 'noopener');
     };
 
     document.getElementById('exportExcelBtn').onclick = () => {
@@ -979,44 +721,33 @@ ${clientUrl}`);
       sfx.pop();
       const visible = getFilteredProducts();
       if (!visible.length) return showToast('אין מוצרים לייצוא', '');
-
       const headers = ['משפחה', 'שם מוצר', 'מק״ט / ברקוד', 'מחיר בסיס', 'הנחה %', 'מחיר סופי', 'במלאי', 'תיאור'];
-      const rows = visible.map(p => [
-        p.familyName, p.name, p.sku || '', p.basePrice, p.discount, p.finalPrice, p.inStock ? 'כן' : 'לא', p.desc || ''
-      ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
-
-      const blob = new Blob(['﻿' + [headers.join(','), ...rows].join('
-')], { type: 'text/csv;charset=utf-8;' });
+      const rows = visible.map(p => [p.familyName, p.name, p.sku || '', p.basePrice, p.discount, p.finalPrice, p.inStock ? 'כן' : 'לא', p.desc || '']
+        .map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
+      const blob = new Blob(['\uFEFF' + [headers.join(','), ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `Cataforge_${currentStore.storeId}_${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
-      showToast('קובץ האקסל ירד למחשב 💾');
+      showToast('קובץ האקסל ירד למחשב');
     };
 
     async function handleLogin() {
       const code = document.getElementById('accessCodeInput').value.trim().toUpperCase();
-      if (!code) {
-        sfx.error();
-        showToast('נא להזין מספר טלפון או קוד גישה', 'bad');
-        return;
-      }
+      if (!code) { sfx.error(); showToast('נא להזין מספר טלפון או קוד גישה', 'bad'); return; }
       const info = await resolveClientInfo(code);
-      if (!info || info.active === false) {
+      if (!info) {
         sfx.error();
         await showApprovalModal(code);
         return;
       }
       localStorage.setItem('cataforge_saved_code', code);
       sfx.success();
-      openStore({ ...info, code }, false);
+      openStore(info, false);
     }
 
     document.getElementById('enterBtn').onclick = handleLogin;
-    document.getElementById('accessCodeInput').onkeydown = (e) => {
-      if (e.key === 'Enter') handleLogin();
-    };
-
+    document.getElementById('accessCodeInput').onkeydown = (e) => { if (e.key === 'Enter') handleLogin(); };
     document.getElementById('logoutBtn').onclick = () => {
       localStorage.removeItem('cataforge_saved_code');
       window.location.href = window.location.origin + window.location.pathname;
@@ -1029,19 +760,13 @@ ${clientUrl}`);
       const storeParam = params.get('store');
       if (storeParam) {
         const storeInfo = findStoreById(storeParam);
-        if (storeInfo) {
-          openStore(storeInfo, true);
-          return;
-        }
+        if (storeInfo) { openStore(storeInfo, true); return; }
       }
 
       const savedCode = localStorage.getItem('cataforge_saved_code');
       if (savedCode) {
         const info = await resolveClientInfo(savedCode);
-        if (info && info.active !== false) {
-          openStore({ ...info, code: savedCode }, false);
-          return;
-        }
+        if (info) { openStore(info, false); return; }
       }
 
       initAds();
