@@ -4,16 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>קאטפורג' – קטלוג 3 חכם</title>
-    <meta name="description" content="קאטפורג' (CataForge) – מערכת חכמה ליצירת קטלוג מוצרים דיגיטלי לעסקים, ניהול מבצעים והנחות, סריקת ברקודים והזמנה מהירה ישר לוואטסאפ." />
-  <meta name="keywords" content="קטלוג דיגיטלי, קטלוג לוואטסאפ, קטלוג מוצרים לעסקים, מחירון דיגיטלי, הזמנות בוואטסאפ, קאטפורג'" />
-  <link rel="canonical" href="https://tgsofts.github.io/cataforge/" />
-
-  <!-- תצוגה מקדימה מרשימה בשיתוף בוואטסאפ וברשתות -->
-  <meta property="og:title" content="קאטפורג' – קטלוג דיגיטלי חכם והזמנות בוואטסאפ" />
-  <meta property="og:description" content="הקימו קטלוג מוצרים לעסק תוך דקות, נהלו הנחות ומלאי, וקבלו הזמנות מסוכמות ישירות לוואטסאפ." />
-  <meta property="og:url" content="https://tgsofts.github.io/cataforge/" />
-  <meta property="og:type" content="website" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Suez+One&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
@@ -114,12 +104,12 @@
     <section id="loginView" class="login">
       <div class="hero-icon">📦</div>
       <h1>קטלוג <span class="hl">3</span></h1>
-      <p class="muted">הזינו את קוד הגישה האישי שקיבלתם כדי לנהל את הקטלוג שלכם</p>
+      <p class="muted">הזינו מספר טלפון או קוד גישה אישי כדי לנהל את הקטלוג שלכם</p>
 
       <div class="login-card">
-        <label for="accessCodeInput">קוד גישה ייחודי</label>
+        <label for="accessCodeInput">מספר טלפון או קוד גישה</label>
         <div class="code-row">
-          <input id="accessCodeInput" type="text" placeholder="לדוגמה: DEMO-100" maxlength="25" />
+          <input id="accessCodeInput" type="text" placeholder="לדוגמה: 0501234567 או DEMO-100" maxlength="30" />
         </div>
         <button id="enterBtn" class="btn" type="button">כניסה לניהול הקטלוג ✨</button>
 
@@ -287,10 +277,25 @@
     </div>
   </div>
 
+  <div id="approvalModal" class="modal hidden">
+    <div class="modal-card" style="text-align:center;">
+      <div style="font-size:54px; margin-bottom:6px;">🔐</div>
+      <h2 style="margin-top:0">פתיחת קטלוג חדש</h2>
+      <p>הקוד שהזנתם עדיין לא מאושר במערכת. שלחו לי הודעה קצרה ואפתח לכם קטלוג לעסק תוך רגע!</p>
+      <p class="muted" style="font-size:14px;">הקוד שבחרתם: <b id="appCodeLabel" class="ltr"></b></p>
+      <div class="modal-actions" style="justify-content:center; flex-wrap:wrap;">
+        <a id="appWaLink" class="btn wa-btn" href="#" target="_blank" rel="noopener">💬 שליחה בוואטסאפ</a>
+        <a class="btn secondary" href="tel:0525914007">📞 חיוג</a>
+        <a id="appMailLink" class="btn secondary" href="#">✉️ מייל</a>
+        <button type="button" id="closeApprovalBtn" class="btn secondary">סגירה</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toast" class="toast"></div>
 
   <footer class="site-footer">
-    קאטפורג' (קטלוג 3) · פותח באהבה על ידי TgSofts · 052-5914007
+    קאטפורג' (קטלוג 3) · פותח באהבה על ידי TgSofts · <a href="tel:0525914007" style="color:inherit;text-decoration:none">052-5914007</a> · <a href="mailto:tziongvili@gmail.com" style="color:inherit;text-decoration:none">tziongvili@gmail.com</a>
   </footer>
 
   <script src="config.js"></script>
@@ -353,6 +358,11 @@
       }[m]));
     }
 
+    async function hashAccessCode(code) {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('cataforge-v1:' + code));
+      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('').slice(0, 32);
+    }
+
     let db = null;
     const cloudChip = document.getElementById('cloudStatus');
     try {
@@ -408,11 +418,12 @@
 
     async function loadApprovedClients() {
       try {
-        const res = await fetch('approved.json?t=' + Date.now());
+        const res = await fetch('approved.json?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) approvedClients = await res.json();
       } catch (e) {}
-      if (!approvedClients['DEMO-100']) {
-        approvedClients['DEMO-100'] = {
+      const demoHash = await hashAccessCode('DEMO-100');
+      if (!approvedClients['DEMO-100'] && !approvedClients[demoHash]) {
+        approvedClients[demoHash] = {
           storeId: 'demo_store',
           storeName: 'חנות הדגמה - קאטפורג׳',
           whatsapp: '972525914007',
@@ -420,6 +431,25 @@
         };
       }
     }
+
+    async function resolveClientInfo(code) {
+      if (approvedClients[code]) return approvedClients[code];
+      const hashed = await hashAccessCode(code);
+      return approvedClients[hashed] || null;
+    }
+
+    async function showApprovalModal(code) {
+      const key = await hashAccessCode(code);
+      const msg = `היי! אשמח לפתוח קטלוג חדש בקאטפורג' 📦\nקוד אישור: ${key}`;
+      document.getElementById('appCodeLabel').textContent = code;
+      document.getElementById('appWaLink').href = `https://wa.me/972525914007?text=${encodeURIComponent(msg)}`;
+      document.getElementById('appMailLink').href = `mailto:tziongvili@gmail.com?subject=${encodeURIComponent('אישור פתיחת קטלוג בקאטפורג')}&body=${encodeURIComponent(msg)}`;
+      document.getElementById('approvalModal').classList.remove('hidden');
+    }
+
+    document.getElementById('closeApprovalBtn').onclick = () => {
+      document.getElementById('approvalModal').classList.add('hidden');
+    };
 
     async function initAds() {
       try {
@@ -511,7 +541,7 @@
       const cached = localStorage.getItem(localKey);
       if (cached) {
         try { storeData = JSON.parse(cached); } catch (e) {}
-      } else if (storeInfo.storeId === 'demo_store') {
+      } else if (storeInfo.storeId === 'demo_store' || storeInfo.storeId === 'cataforge_demo') {
         storeData = JSON.parse(JSON.stringify(defaultDemoData));
       }
 
@@ -641,7 +671,8 @@
       }
 
       grid.innerHTML = visible.map(p => {
-        const waPhone = (currentStore.whatsapp || '').replace(/\D/g, '');
+        const rawPhone = String(currentStore.whatsapp || currentStore.phone || '').replace(/\D/g, '');
+        const waPhone = rawPhone.startsWith('0') ? '972' + rawPhone.slice(1) : rawPhone;
         const waMsg = encodeURIComponent(`היי ${currentStore.storeName}, אשמח להזמין:
 *${p.name}*${p.sku ? ` (מק"ט: ${p.sku})` : ''}
 מחיר: ${p.finalPrice.toLocaleString()} ₪`);
@@ -935,10 +966,12 @@
         const saleTag = p.discount > 0 ? ` *(במבצע ${p.discount}% הנחה!)*` : '';
         lines.push(`▪️ *${p.name}* — ${p.finalPrice.toLocaleString()} ₪${saleTag}`);
       });
-      const NL = String.fromCharCode(10);
-      lines.push(NL + '🔗 לצפייה והזמנה בקטלוג המלא:' + NL + clientUrl);
+      lines.push(`
+🔗 לצפייה והזמנה בקטלוג המלא:
+${clientUrl}`);
 
-      window.open(`https://wa.me{encodeURIComponent(lines.join(NL))}`, '_blank', 'noopener');
+      window.open(`https://wa.me/?text=${encodeURIComponent(lines.join('
+'))}`, '_blank', 'noopener');
     };
 
     document.getElementById('exportExcelBtn').onclick = () => {
@@ -947,13 +980,13 @@
       const visible = getFilteredProducts();
       if (!visible.length) return showToast('אין מוצרים לייצוא', '');
 
-      const NL = String.fromCharCode(10);
       const headers = ['משפחה', 'שם מוצר', 'מק״ט / ברקוד', 'מחיר בסיס', 'הנחה %', 'מחיר סופי', 'במלאי', 'תיאור'];
       const rows = visible.map(p => [
         p.familyName, p.name, p.sku || '', p.basePrice, p.discount, p.finalPrice, p.inStock ? 'כן' : 'לא', p.desc || ''
       ].map(v => `"${String(v).replace(/"/g, '""')}"`).join(','));
 
-      const blob = new Blob(['\uFEFF' + [headers.join(','), ...rows].join(NL)], { type: 'text/csv;charset=utf-8;' });
+      const blob = new Blob(['﻿' + [headers.join(','), ...rows].join('
+')], { type: 'text/csv;charset=utf-8;' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
       a.download = `Cataforge_${currentStore.storeId}_${new Date().toISOString().slice(0, 10)}.csv`;
@@ -961,12 +994,17 @@
       showToast('קובץ האקסל ירד למחשב 💾');
     };
 
-    function handleLogin() {
+    async function handleLogin() {
       const code = document.getElementById('accessCodeInput').value.trim().toUpperCase();
-      const info = approvedClients[code];
+      if (!code) {
+        sfx.error();
+        showToast('נא להזין מספר טלפון או קוד גישה', 'bad');
+        return;
+      }
+      const info = await resolveClientInfo(code);
       if (!info || info.active === false) {
         sfx.error();
-        showToast('קוד גישה שגוי או לא פעיל ❌', 'bad');
+        await showApprovalModal(code);
         return;
       }
       localStorage.setItem('cataforge_saved_code', code);
@@ -998,15 +1036,16 @@
       }
 
       const savedCode = localStorage.getItem('cataforge_saved_code');
-      if (savedCode && approvedClients[savedCode] && approvedClients[savedCode].active !== false) {
-        openStore({ ...approvedClients[savedCode], code: savedCode }, false);
-        return;
+      if (savedCode) {
+        const info = await resolveClientInfo(savedCode);
+        if (info && info.active !== false) {
+          openStore({ ...info, code: savedCode }, false);
+          return;
+        }
       }
 
       initAds();
     })();
   </script>
-    <script src="cart.js"></script>
-
 </body>
 </html>
