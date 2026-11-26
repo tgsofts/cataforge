@@ -245,12 +245,13 @@
       } catch (e) {}
     }
 
-    const sfx = {
-      pop: () => playTone(, 'sine', 0.08, 0),
+        const sfx = {
+      pop: () => playTone(Array.of(520), 'sine', 0.08, 0),
       success: () => playTone([523.25, 659.25, 783.99], 'triangle', 0.16, 0.07),
-      delete: () => playTone(, 'sawtooth', 0.12, 0.06),
-      error: () => playTone(, 'sawtooth', 0.16, 0.09)
+      delete: () => playTone([320, 220], 'sawtooth', 0.12, 0.06),
+      error: () => playTone([220, 180], 'sawtooth', 0.16, 0.09)
     };
+
     soundBtn.onclick = () => {
       soundOn = !soundOn;
       localStorage.setItem('cataforge_sound', soundOn ? 'on' : 'off');
